@@ -1,0 +1,32 @@
+entity ResourceType {
+	name String
+}
+
+entity Resource {
+	name String
+}
+
+entity Reservation {
+    date Date
+}
+
+entity User{
+	email String
+}
+
+relationship OneToMany {
+	Resource{type} to ResourceType
+}
+relationship OneToMany {
+	Reservation{user} to User
+}
+
+relationship OneToMany {
+	Reservation{resource} to Resource
+}
+
+// Set pagination options
+paginate Resource, Reservation with infinite-scroll
+
+dto * with mapstruct
+

@@ -68,21 +68,38 @@ spring:
 # export SECURITY_OAUTH2_CLIENT_CLIENT_ID="jhipster"
 # export SECURITY_OAUTH2_CLIENT_CLIENT_SECRET="38561a05"
 # ===================================================================
+
+oauth2.issuer: https://keycloak.collaud.me/auth/realms/fablab
 security:
     basic:
         enabled: false
+#    oauth2:
+#        client:
+#            access-token-uri: ${oauth2.issuer}/protocol/openid-connect/token
+#            user-authorization-uri: ${oauth2.issuer}/protocol/openid-connect/auth
+#            client-id: web_app
+#            client-secret: web_app
+#            client-authentication-scheme: form
+#            scope: openid profile email
+#
+#        resource:
+#            filter-order: 3
+#            user-info-uri: ${oauth2.issuer}/protocol/openid-connect/userinfo
+#            token-info-uri: ${oauth2.issuer}/protocol/openid-connect/token/introspect
+#            prefer-token-info: false
     oauth2:
         client:
-            access-token-uri: http://localhost:9080/auth/realms/jhipster/protocol/openid-connect/token
-            user-authorization-uri: http://localhost:9080/auth/realms/jhipster/protocol/openid-connect/auth
-            client-id: web_app
-            client-secret: web_app
+            access-token-uri: ${oauth2.issuer}/protocol/openid-connect/token
+            user-authorization-uri: ${oauth2.issuer}/protocol/openid-connect/auth
+            client-id: reservation-api
+            client-secret: 7b697744-b7e0-4cff-be18-aebecbd70519
             client-authentication-scheme: form
-            scope: openid profile email
+            scope: openid profile email roles bla
+
         resource:
             filter-order: 3
-            user-info-uri: http://localhost:9080/auth/realms/jhipster/protocol/openid-connect/userinfo
-            token-info-uri: http://localhost:9080/auth/realms/jhipster/protocol/openid-connect/token/introspect
+            user-info-uri: ${oauth2.issuer}/protocol/openid-connect/userinfo
+            token-info-uri: ${oauth2.issuer}/protocol/openid-connect/token/introspect
             prefer-token-info: false
 
 server:

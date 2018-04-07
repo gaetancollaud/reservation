@@ -13,8 +13,9 @@ export class AuthServerProvider {
     logout(): Observable<any> {
         // logout from the server
         return this.http.post(SERVER_API_URL + 'api/logout', {}, { observe: 'response' }).map((response: HttpResponse<any>) => {
+            window.location.href = 'https://keycloak.collaud.me/auth/realms/fablab/protocol/openid-connect/logout?redirect_uri=http://localhost:8080';
             // to get a new csrf token call the api
-            this.http.get(SERVER_API_URL + 'api/account').subscribe(() => {}, () => {});
+            // this.http.get(SERVER_API_URL + 'api/account').subscribe(() => {}, () => {});
             return response;
         });
     }
