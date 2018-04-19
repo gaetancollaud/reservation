@@ -7,26 +7,19 @@ entity Resource {
 }
 
 entity Reservation {
-    date Date
+    date ZonedDateTime
 }
 
-entity User{
-	email String
-}
-
-relationship OneToMany {
+relationship ManyToOne {
 	Resource{type} to ResourceType
 }
-relationship OneToMany {
-	Reservation{user} to User
-}
 
-relationship OneToMany {
+relationship ManyToOne {
 	Reservation{resource} to Resource
 }
 
 // Set pagination options
-paginate Resource, Reservation with infinite-scroll
+// paginate Resource, Reservation with infinite-scroll
 
 dto * with mapstruct
 
