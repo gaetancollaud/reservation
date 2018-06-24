@@ -1,0 +1,28 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "minTimeSec",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "maxTimeSec",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "maxResource",
+            "fieldType": "Long"
+        }
+    ],
+    "changelogDate": "20180419185929",
+    "entityTableName": "resource_type",
+    "dto": "mapstruct",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false
+}

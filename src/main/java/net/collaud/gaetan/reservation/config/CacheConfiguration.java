@@ -42,6 +42,9 @@ public class CacheConfiguration {
             cm.createCache(net.collaud.gaetan.reservation.domain.User.class.getName(), jcacheConfiguration);
             cm.createCache(net.collaud.gaetan.reservation.domain.Authority.class.getName(), jcacheConfiguration);
             cm.createCache(net.collaud.gaetan.reservation.domain.User.class.getName() + ".authorities", jcacheConfiguration);
+            cm.createCache(net.collaud.gaetan.reservation.domain.ResourceType.class.getName(), jcacheConfiguration);
+            cm.createCache(net.collaud.gaetan.reservation.domain.Resource.class.getName(), jcacheConfiguration);
+            cm.createCache(net.collaud.gaetan.reservation.domain.Reservation.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

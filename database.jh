@@ -1,5 +1,8 @@
 entity ResourceType {
 	name String
+    minTimeSec Long
+    maxTimeSec Long
+    maxResource Long
 }
 
 entity Resource {
@@ -7,7 +10,8 @@ entity Resource {
 }
 
 entity Reservation {
-    date ZonedDateTime
+    timestampStart ZonedDateTime
+    timestampEnd ZonedDateTime
 }
 
 relationship ManyToOne {
@@ -16,6 +20,9 @@ relationship ManyToOne {
 
 relationship ManyToOne {
 	Reservation{resource} to Resource
+}
+relationship ManyToOne {
+	Reservation{user} to User
 }
 
 // Set pagination options

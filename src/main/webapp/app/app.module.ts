@@ -1,38 +1,40 @@
 import './vendor.ts';
 
-import { NgModule, Injector } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { Ng2Webstorage } from 'ngx-webstorage';
-import { JhiEventManager } from 'ng-jhipster';
+import {Injector, NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {HTTP_INTERCEPTORS} from '@angular/common/http';
+import {Ng2Webstorage} from 'ngx-webstorage';
+import {JhiEventManager} from 'ng-jhipster';
 
-import { AuthExpiredInterceptor } from './blocks/interceptor/auth-expired.interceptor';
-import { ErrorHandlerInterceptor } from './blocks/interceptor/errorhandler.interceptor';
-import { NotificationInterceptor } from './blocks/interceptor/notification.interceptor';
-import { ReservationSharedModule, UserRouteAccessService } from './shared';
-import { ReservationAppRoutingModule} from './app-routing.module';
-import { ReservationHomeModule } from './home/home.module';
-import { ReservationAdminModule } from './admin/admin.module';
-import { ReservationEntityModule } from './entities/entity.module';
-import { PaginationConfig } from './blocks/config/uib-pagination.config';
-import { StateStorageService } from './shared/auth/state-storage.service';
+import {AuthExpiredInterceptor} from './blocks/interceptor/auth-expired.interceptor';
+import {ErrorHandlerInterceptor} from './blocks/interceptor/errorhandler.interceptor';
+import {NotificationInterceptor} from './blocks/interceptor/notification.interceptor';
+import {ReservationSharedModule, UserRouteAccessService} from './shared';
+import {ReservationAppRoutingModule} from './app-routing.module';
+import {HomeModule} from './home/home.module';
+import {ReservationAdminModule} from './admin/admin.module';
+import {ReservationEntityModule} from './entities/entity.module';
+import {PaginationConfig} from './blocks/config/uib-pagination.config';
+import {StateStorageService} from './shared/auth/state-storage.service';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import {
+    ActiveMenuDirective,
+    ErrorComponent,
+    FooterComponent,
     JhiMainComponent,
     NavbarComponent,
-    FooterComponent,
-    ProfileService,
     PageRibbonComponent,
-    ActiveMenuDirective,
-    ErrorComponent
+    ProfileService
 } from './layouts';
+import {ReservationHomeModule} from './reservation-home';
 
 @NgModule({
     imports: [
         BrowserModule,
         ReservationAppRoutingModule,
-        Ng2Webstorage.forRoot({ prefix: 'jhi', separator: '-'}),
+        Ng2Webstorage.forRoot({prefix: 'jhi', separator: '-'}),
         ReservationSharedModule,
+        HomeModule,
         ReservationHomeModule,
         ReservationAdminModule,
         ReservationEntityModule,
@@ -76,6 +78,7 @@ import {
             ]
         }
     ],
-    bootstrap: [ JhiMainComponent ]
+    bootstrap: [JhiMainComponent]
 })
-export class ReservationAppModule {}
+export class ReservationAppModule {
+}

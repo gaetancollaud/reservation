@@ -1,0 +1,33 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "resource",
+            "otherEntityName": "resource",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "timestampStart",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "timestampEnd",
+            "fieldType": "ZonedDateTime"
+        }
+    ],
+    "changelogDate": "20180419185931",
+    "entityTableName": "reservation",
+    "dto": "mapstruct",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false
+}
