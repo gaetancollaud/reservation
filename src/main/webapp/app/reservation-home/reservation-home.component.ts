@@ -1,7 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ReservationHomeDatastoreService} from './reservation-home-datastore.service';
-import {LoginService, Principal} from '../shared';
-import {JhiEventManager} from 'ng-jhipster';
 
 @Component({
     selector: 'jhi-reservation-home',
@@ -11,19 +9,17 @@ import {JhiEventManager} from 'ng-jhipster';
     ]
 
 })
-export class ReservationHomeComponent implements OnInit {
+export class ReservationHomeComponent implements OnInit, OnDestroy {
 
-    constructor(public datastore: ReservationHomeDatastoreService,
-    private principal: Principal,
-    private loginService: LoginService,
-    private eventManager: JhiEventManager) {
+    constructor(public datastore: ReservationHomeDatastoreService) {
     }
 
     ngOnInit() {
-        // this.principal.identity().then((account) => {
-        //     //
-        // });
         this.datastore.start();
+    }
+
+    ngOnDestroy(): void {
+        this.datastore.stop();
     }
 
 }

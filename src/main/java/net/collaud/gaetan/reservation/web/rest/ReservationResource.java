@@ -4,6 +4,10 @@ import com.codahale.metrics.annotation.Timed;
 import net.collaud.gaetan.reservation.domain.Reservation;
 
 import net.collaud.gaetan.reservation.repository.ReservationRepository;
+import net.collaud.gaetan.reservation.service.ReservationService;
+import net.collaud.gaetan.reservation.service.dto.critieria.ReservationCriteria;
+import net.collaud.gaetan.reservation.utils.EndOfDayTemporalAduster;
+import net.collaud.gaetan.reservation.utils.StartOfDayTemporalAduster;
 import net.collaud.gaetan.reservation.web.rest.errors.BadRequestAlertException;
 import net.collaud.gaetan.reservation.web.rest.util.HeaderUtil;
 import net.collaud.gaetan.reservation.service.dto.ReservationDTO;
@@ -17,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import java.time.ZonedDateTime;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,9 +40,12 @@ public class ReservationResource {
 
     private final ReservationRepository reservationRepository;
 
+    private final ReservationService reservationService;
+
     private final ReservationMapper reservationMapper;
 
-    public ReservationResource(ReservationRepository reservationRepository, ReservationMapper reservationMapper) {
+    public ReservationResource(ReservationService reservationService, ReservationRepository reservationRepository, ReservationMapper reservationMapper) {
+        this.reservationService = reservationService;
         this.reservationRepository = reservationRepository;
         this.reservationMapper = reservationMapper;
     }
@@ -55,7 +65,7 @@ public class ReservationResource {
             throw new BadRequestAlertException("A new reservation cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Reservation reservation = reservationMapper.toEntity(reservationDTO);
-        reservation = reservationRepository.save(reservation);
+        reservation = reservationService.editReservation(reservation);
         ReservationDTO result = reservationMapper.toDto(reservation);
         return ResponseEntity.created(new URI("/api/reservations/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -79,7 +89,7 @@ public class ReservationResource {
             return createReservation(reservationDTO);
         }
         Reservation reservation = reservationMapper.toEntity(reservationDTO);
-        reservation = reservationRepository.save(reservation);
+        reservation = reservationService.addReservation(reservation);
         ReservationDTO result = reservationMapper.toDto(reservation);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, reservationDTO.getId().toString()))
@@ -97,7 +107,15 @@ public class ReservationResource {
         log.debug("REST request to get all Reservations");
         List<Reservation> reservations = reservationRepository.findAll();
         return reservationMapper.toDto(reservations);
-        }
+    }
+
+    @PostMapping("/reservations/search")
+    @Timed
+    public List<ReservationDTO> search(@RequestBody ReservationCriteria criteria) {
+        log.debug("Search in reservation {}", criteria);
+        List<Reservation> reservations = reservationRepository.search(criteria);
+        return reservationMapper.toDto(reservations);
+    }
 
     /**
      * GET  /reservations/:id : get the "id" reservation.

@@ -21,7 +21,7 @@
                     </span>
                 </a>
             </li>
-            <li *jhiHasAnyAuthority="['ROLE_MANAGER', 'ROLE_ADMIN']" ngbDropdown
+            <li *jhiHasAnyAuthority="['ROLE_RESERVATION_MANAGE', 'ROLE_RESERVATION_CONFIG', 'ROLE_ADMIN']" ngbDropdown
                 class="nav-item dropdown pointer" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu">
                     <span>
@@ -32,21 +32,21 @@
                     </span>
                 </a>
                 <ul class="dropdown-menu" ngbDropdownMenu>
-                    <li>
+                    <li  *jhiHasAnyAuthority="['ROLE_RESERVATION_CONFIG']">
                         <a class="dropdown-item" routerLink="resource-type" routerLinkActive="active"
                            [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
                             <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
                             <span jhiTranslate="global.menu.entities.resourceType">Resource Type</span>
                         </a>
                     </li>
-                    <li>
+                    <li  *jhiHasAnyAuthority="['ROLE_RESERVATION_CONFIG']">
                         <a class="dropdown-item" routerLink="resource" routerLinkActive="active"
                            [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
                             <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
                             <span jhiTranslate="global.menu.entities.resource">Resource</span>
                         </a>
                     </li>
-                    <li>
+                    <li  *jhiHasAnyAuthority="['ROLE_RESERVATION_MANAGE']">
                         <a class="dropdown-item" routerLink="reservation" routerLinkActive="active"
                            [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
                             <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
@@ -115,19 +115,19 @@
                 </ul>
             </li>
             <!--<li ngbDropdown class="nav-item dropdown pointer" *ngIf="languages">-->
-                <!--<a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);"-->
-                   <!--id="languagesnavBarDropdown" *ngIf="languages.length > 1">-->
-                    <!--<span>-->
-                        <!--<i class="fa fa-flag" aria-hidden="true"></i>-->
-                        <!--<span jhiTranslate="global.menu.language">Language</span>-->
-                    <!--</span>-->
-                <!--</a>-->
-                <!--<ul class="dropdown-menu" ngbDropdownMenu *ngIf="languages.length > 1">-->
-                    <!--<li *ngFor="let language of languages">-->
-                        <!--<a class="dropdown-item" [jhiActiveMenu]="language" href="javascript:void(0);"-->
-                           <!--(click)="changeLanguage(language);collapseNavbar();">{{language | findLanguageFromKey}}</a>-->
-                    <!--</li>-->
-                <!--</ul>-->
+            <!--<a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);"-->
+            <!--id="languagesnavBarDropdown" *ngIf="languages.length > 1">-->
+            <!--<span>-->
+            <!--<i class="fa fa-flag" aria-hidden="true"></i>-->
+            <!--<span jhiTranslate="global.menu.language">Language</span>-->
+            <!--</span>-->
+            <!--</a>-->
+            <!--<ul class="dropdown-menu" ngbDropdownMenu *ngIf="languages.length > 1">-->
+            <!--<li *ngFor="let language of languages">-->
+            <!--<a class="dropdown-item" [jhiActiveMenu]="language" href="javascript:void(0);"-->
+            <!--(click)="changeLanguage(language);collapseNavbar();">{{language | findLanguageFromKey}}</a>-->
+            <!--</li>-->
+            <!--</ul>-->
             <!--</li>-->
             <li *ngSwitchCase="false" class="nav-item pointer" placement="bottom-right">
                 <a class="nav-link" (click)="login()" id="login">
@@ -136,7 +136,8 @@
                 </a>
             </li>
 
-            <li  *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" placement="bottom-right" routerLinkActive="active"
+            <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" placement="bottom-right"
+                routerLinkActive="active"
                 [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu">
                   <span *ngIf="!getImageUrl()">

@@ -13,15 +13,15 @@ public class ReservationService {
 
     public Reservation addReservation(Reservation reservation) {
         SecurityUtils.getCurrentUserLogin();
-        return null;
+        return reservationRepository.save(reservation);
     }
 
     public Reservation editReservation(Reservation reservation) {
-        return null;
+        return reservationRepository.save(reservation);
     }
 
     public void deleteReservation(long reservationId) {
-
+        reservationRepository.delete(reservationId);
     }
 
 

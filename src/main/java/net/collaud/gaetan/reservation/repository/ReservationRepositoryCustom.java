@@ -2,10 +2,10 @@ package net.collaud.gaetan.reservation.repository;
 
 import net.collaud.gaetan.reservation.domain.Reservation;
 import net.collaud.gaetan.reservation.service.dto.critieria.ReservationCriteria;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import org.springframework.data.jpa.repository.*;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -15,9 +15,8 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface ReservationRepository extends JpaRepository<Reservation, Long>, ReservationRepositoryCustom {
+public interface ReservationRepositoryCustom{
 
-    @Query("select reservation from Reservation reservation where reservation.user.login = ?#{principal.username}")
-    List<Reservation> findByUserIsCurrentUser();
+    List<Reservation> search(ReservationCriteria criteria);
 
 }

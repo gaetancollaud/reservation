@@ -4,6 +4,7 @@ import net.collaud.gaetan.reservation.ReservationApp;
 
 import net.collaud.gaetan.reservation.domain.Reservation;
 import net.collaud.gaetan.reservation.repository.ReservationRepository;
+import net.collaud.gaetan.reservation.service.ReservationService;
 import net.collaud.gaetan.reservation.service.dto.ReservationDTO;
 import net.collaud.gaetan.reservation.service.mapper.ReservationMapper;
 import net.collaud.gaetan.reservation.web.rest.errors.ExceptionTranslator;
@@ -55,6 +56,9 @@ public class ReservationResourceIntTest {
     private ReservationRepository reservationRepository;
 
     @Autowired
+    private ReservationService reservationService;
+
+    @Autowired
     private ReservationMapper reservationMapper;
 
     @Autowired
@@ -76,7 +80,7 @@ public class ReservationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ReservationResource reservationResource = new ReservationResource(reservationRepository, reservationMapper);
+        final ReservationResource reservationResource = new ReservationResource(reservationService, reservationRepository, reservationMapper);
         this.restReservationMockMvc = MockMvcBuilders.standaloneSetup(reservationResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -86,7 +90,7 @@ public class ReservationResourceIntTest {
 
     /**
      * Create an entity for this test.
-     *
+     * <p>
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */

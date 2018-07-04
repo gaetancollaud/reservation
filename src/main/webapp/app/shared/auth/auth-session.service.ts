@@ -14,7 +14,7 @@ export class AuthServerProvider {
     logout(): Observable<any> {
         // logout from the server
         return this.http.post(SERVER_API_URL + 'api/logout', {}, {observe: 'response'}).map((response: HttpResponse<any>) => {
-            window.location.href = this.authServer + '/realms/fablab/protocol/openid-connect/logout?redirect_uri=http://localhost:8080';
+            window.location.href = `${this.authServer}realms/fablab/protocol/openid-connect/logout?redirect_uri=${window.location.href}`;
             // to get a new csrf token call the api
             // this.http.get(SERVER_API_URL + 'api/account').subscribe(() => {}, () => {});
             return response;

@@ -1,4 +1,4 @@
-import { BaseEntity } from './../../shared';
+import {BaseEntity} from './../../shared';
 
 export class Reservation implements BaseEntity {
     constructor(
@@ -8,5 +8,10 @@ export class Reservation implements BaseEntity {
         public resourceId?: number,
         public userId?: number,
     ) {
+    }
+}
+
+export class ReservationCriteria {
+    constructor(public from?: Date, public to?: Date) {
     }
 }

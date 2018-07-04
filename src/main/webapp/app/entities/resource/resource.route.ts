@@ -11,7 +11,7 @@ export const resourceRoute: Routes = [
         path: 'resource',
         component: ResourceComponent,
         data: {
-            authorities: ['ROLE_MANAGER', 'ROLE_ADMIN'],
+            authorities: ['ROLE_RESERVATION_CONFIG'],
             pageTitle: 'reservationApp.resource.home.title'
         },
         canActivate: [UserRouteAccessService]
@@ -19,7 +19,7 @@ export const resourceRoute: Routes = [
         path: 'resource/:id',
         component: ResourceDetailComponent,
         data: {
-            authorities: ['ROLE_MANAGER', 'ROLE_ADMIN'],
+            authorities: ['ROLE_RESERVATION_CONFIG'],
             pageTitle: 'reservationApp.resource.home.title'
         },
         canActivate: [UserRouteAccessService]
@@ -31,7 +31,7 @@ export const resourcePopupRoute: Routes = [
         path: 'resource-new',
         component: ResourcePopupComponent,
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_RESERVATION_CONFIG'],
             pageTitle: 'reservationApp.resource.home.title'
         },
         canActivate: [UserRouteAccessService],
@@ -41,7 +41,7 @@ export const resourcePopupRoute: Routes = [
         path: 'resource/:id/edit',
         component: ResourcePopupComponent,
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_RESERVATION_CONFIG'],
             pageTitle: 'reservationApp.resource.home.title'
         },
         canActivate: [UserRouteAccessService],
@@ -51,7 +51,7 @@ export const resourcePopupRoute: Routes = [
         path: 'resource/:id/delete',
         component: ResourceDeletePopupComponent,
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: ['ROLE_RESERVATION_CONFIG'],
             pageTitle: 'reservationApp.resource.home.title'
         },
         canActivate: [UserRouteAccessService],

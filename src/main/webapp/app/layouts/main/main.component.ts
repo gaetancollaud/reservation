@@ -26,7 +26,7 @@ export class JhiMainComponent implements OnInit {
 
     ngOnInit() {
         this.principal.identity().then((account) => {
-            //
+            // nothing to do
         });
         this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {

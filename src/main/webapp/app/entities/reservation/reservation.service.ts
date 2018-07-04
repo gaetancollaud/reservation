@@ -1,37 +1,43 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpResponse} from '@angular/common/http';
+import {Observable} from 'rxjs/Observable';
+import {SERVER_API_URL} from '../../app.constants';
 
-import { JhiDateUtils } from 'ng-jhipster';
+import {JhiDateUtils} from 'ng-jhipster';
 
-import { Reservation } from './reservation.model';
-import { createRequestOption } from '../../shared';
+import {Reservation, ReservationCriteria} from './reservation.model';
+import {createRequestOption} from '../../shared';
 
 export type EntityResponseType = HttpResponse<Reservation>;
 
 @Injectable()
 export class ReservationService {
 
-    private resourceUrl =  SERVER_API_URL + 'api/reservations';
+    private resourceUrl = SERVER_API_URL + 'api/reservations';
 
-    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
+    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) {
+    }
 
     create(reservation: Reservation): Observable<EntityResponseType> {
         const copy = this.convert(reservation);
-        return this.http.post<Reservation>(this.resourceUrl, copy, { observe: 'response' })
+        return this.http.post<Reservation>(this.resourceUrl, copy, {observe: 'response'})
             .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
     update(reservation: Reservation): Observable<EntityResponseType> {
         const copy = this.convert(reservation);
-        return this.http.put<Reservation>(this.resourceUrl, copy, { observe: 'response' })
+        return this.http.put<Reservation>(this.resourceUrl, copy, {observe: 'response'})
             .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<Reservation>(`${this.resourceUrl}/${id}`, { observe: 'response'})
+        return this.http.get<Reservation>(`${this.resourceUrl}/${id}`, {observe: 'response'})
             .map((res: EntityResponseType) => this.convertResponse(res));
+    }
+
+    search(criteria: ReservationCriteria): Observable<HttpResponse<Reservation[]>> {
+        return this.http.post<Reservation[]>(`${this.resourceUrl}/search`, criteria, {observe: 'response'})
+            .map((res: HttpResponse<Reservation[]>) => this.convertArrayResponse(res));
     }
 
     query(req?: any): Observable<HttpResponse<Reservation[]>> {
@@ -41,7 +47,7 @@ export class ReservationService {
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, {observe: 'response'});
     }
 
     private convertResponse(res: EntityResponseType): EntityResponseType {

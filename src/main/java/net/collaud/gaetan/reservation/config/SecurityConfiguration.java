@@ -1,10 +1,9 @@
 package net.collaud.gaetan.reservation.config;
 
-import net.collaud.gaetan.reservation.security.*;
-
-import io.github.jhipster.security.*;
-
+import io.github.jhipster.security.AjaxLogoutSuccessHandler;
+import net.collaud.gaetan.reservation.security.AuthoritiesConstants;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -13,22 +12,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.filter.CorsFilter;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.URLEncoder;
 
 @Configuration
 @Import(SecurityProblemSupport.class)
@@ -92,14 +81,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests()
             .antMatchers("/api/profile-info").permitAll()
-            .antMatchers("/api/resource-types/**").hasAuthority(AuthoritiesConstants.MANAGER)
-            .antMatchers("/api/resources/**").hasAuthority(AuthoritiesConstants.MANAGER)
-            .antMatchers("/api/**").hasAuthority(AuthoritiesConstants.USER)
+            .antMatchers(HttpMethod.GET, "/api/resources/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/users/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/account/**").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/reservations/search").permitAll()
+
+            .antMatchers("/api/resource-types/**").hasAnyAuthority(AuthoritiesConstants.RESERVATION_CONFIG)
+            .antMatchers("/api/resources/**").hasAnyAuthority(AuthoritiesConstants.RESERVATION_CONFIG)
+            .antMatchers("/api/users/**").hasAnyAuthority(AuthoritiesConstants.RESERVATION_CONFIG, AuthoritiesConstants.RESERVATION_MANAGE)
+            .antMatchers("/api/reservations/**").hasAnyAuthority(AuthoritiesConstants.USER)
+            .antMatchers("/api/account/**").authenticated()
+            .antMatchers("/api/**").hasAnyAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/management/health").permitAll()
-            .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
+            .antMatchers("/management/**").hasAnyAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/v2/api-docs/**").permitAll()
             .antMatchers("/swagger-resources/configuration/ui").permitAll()
-            .antMatchers("/swagger-ui/index.html").hasAuthority(AuthoritiesConstants.ADMIN);
+            .antMatchers("/swagger-ui/index.html").hasAnyAuthority(AuthoritiesConstants.ADMIN);
 
     }
 

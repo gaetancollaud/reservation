@@ -1,3 +1,16 @@
-<p>
-  reservation-list works!
-</p>
+<table class="table">
+    <tr>
+        <th>Start</th>
+        <td>Duration</td>
+        <td>Resource</td>
+        <td>Who</td>
+    </tr>
+    <tr *ngFor="let reservation of datastore.reservations|async">
+        <td>{{reservation.timestampStart|datetime}}</td>
+        <td>{{reservation.duration}}</td>
+        <td>{{reservation.resource.name}}</td>
+        <td>{{reservation.user.firstName}} {{reservation.user.lastName}}</td>
+    </tr>
+</table>
+
+<pre>{{datastore.reservations|async|json}}</pre>

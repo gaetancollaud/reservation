@@ -13,6 +13,7 @@ import {
     Principal,
     HasAnyAuthorityDirective,
 } from './';
+import {DatetimePipe} from './filters/datetime.pipe';
 
 @NgModule({
     imports: [
@@ -20,7 +21,8 @@ import {
         ReservationSharedCommonModule
     ],
     declarations: [
-        HasAnyAuthorityDirective
+        HasAnyAuthorityDirective,
+        DatetimePipe
     ],
     providers: [
         LoginService,
@@ -35,7 +37,8 @@ import {
     exports: [
         ReservationSharedCommonModule,
         HasAnyAuthorityDirective,
-        DatePipe
+        DatePipe,
+        DatetimePipe
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

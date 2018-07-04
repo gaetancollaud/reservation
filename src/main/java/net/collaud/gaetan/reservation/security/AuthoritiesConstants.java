@@ -7,7 +7,9 @@ public final class AuthoritiesConstants {
 
     public static final String ADMIN = "ROLE_ADMIN";
 
-    public static final String MANAGER = "MANAGER";
+    public static final String RESERVATION_CONFIG = "ROLE_RESERVATION_CONFIG";
+    public static final String RESERVATION_MANAGE = "ROLE_RESERVATION_MANAGE";
+    public static final String RESERVATION_USE = "ROLE_RESERVATION_USE";
 
     public static final String USER = "ROLE_USER";
 
