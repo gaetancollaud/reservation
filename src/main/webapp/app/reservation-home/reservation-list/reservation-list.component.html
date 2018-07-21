@@ -1,16 +1,25 @@
+<h2>Réservations</h2>
+
 <table class="table">
-    <tr>
-        <th>Start</th>
-        <td>Duration</td>
-        <td>Resource</td>
-        <td>Who</td>
-    </tr>
-    <tr *ngFor="let reservation of datastore.reservations|async">
-        <td>{{reservation.timestampStart|datetime}}</td>
-        <td>{{reservation.duration}}</td>
-        <td>{{reservation.resource.name}}</td>
-        <td>{{reservation.user.firstName}} {{reservation.user.lastName}}</td>
-    </tr>
+	<tr>
+		<th>Start</th>
+		<td>Duration</td>
+		<td>Resource</td>
+		<td>Who</td>
+		<td></td>
+	</tr>
+	<tr *ngFor="let reservation of datastore.reservations|async">
+		<td>{{reservation.timestampStart|datetime}}</td>
+		<td>{{reservation.duration}}</td>
+		<td>{{reservation.resource.name}}</td>
+		<td>{{reservation.user|username}}</td>
+		<td *ngIf="reservation.canEdit">
+			<span class="btn btn-primary"><i class="fa fa-edit"></i></span>
+			<span class="btn btn-danger"><i class="fa fa-trash"></i></span>
+		</td>
+		<td *ngIf="!reservation.canEdit">
+		</td>
+	</tr>
 </table>
 
-<pre>{{datastore.reservations|async|json}}</pre>
+<!--<pre>{{datastore.reservations|async|json}}</pre>-->

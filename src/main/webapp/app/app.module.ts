@@ -18,67 +18,67 @@ import {PaginationConfig} from './blocks/config/uib-pagination.config';
 import {StateStorageService} from './shared/auth/state-storage.service';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import {
-    ActiveMenuDirective,
-    ErrorComponent,
-    FooterComponent,
-    JhiMainComponent,
-    NavbarComponent,
-    PageRibbonComponent,
-    ProfileService
+	ActiveMenuDirective,
+	ErrorComponent,
+	FooterComponent,
+	JhiMainComponent,
+	NavbarComponent,
+	PageRibbonComponent,
+	ProfileService
 } from './layouts';
 import {ReservationHomeModule} from './reservation-home';
 
 @NgModule({
-    imports: [
-        BrowserModule,
-        ReservationAppRoutingModule,
-        Ng2Webstorage.forRoot({prefix: 'jhi', separator: '-'}),
-        ReservationSharedModule,
-        HomeModule,
-        ReservationHomeModule,
-        ReservationAdminModule,
-        ReservationEntityModule,
-        // jhipster-needle-angular-add-module JHipster will add new module here
-    ],
-    declarations: [
-        JhiMainComponent,
-        NavbarComponent,
-        ErrorComponent,
-        PageRibbonComponent,
-        ActiveMenuDirective,
-        FooterComponent
-    ],
-    providers: [
-        ProfileService,
-        PaginationConfig,
-        UserRouteAccessService,
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: AuthExpiredInterceptor,
-            multi: true,
-            deps: [
-                StateStorageService,
-                Injector
-            ]
-        },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: ErrorHandlerInterceptor,
-            multi: true,
-            deps: [
-                JhiEventManager
-            ]
-        },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: NotificationInterceptor,
-            multi: true,
-            deps: [
-                Injector
-            ]
-        }
-    ],
-    bootstrap: [JhiMainComponent]
+	imports: [
+		BrowserModule,
+		ReservationAppRoutingModule,
+		Ng2Webstorage.forRoot({prefix: 'jhi', separator: '-'}),
+		ReservationSharedModule,
+		HomeModule,
+		ReservationHomeModule,
+		ReservationAdminModule,
+		ReservationEntityModule,
+		// jhipster-needle-angular-add-module JHipster will add new module here
+	],
+	declarations: [
+		JhiMainComponent,
+		NavbarComponent,
+		ErrorComponent,
+		PageRibbonComponent,
+		ActiveMenuDirective,
+		FooterComponent
+	],
+	providers: [
+		ProfileService,
+		PaginationConfig,
+		UserRouteAccessService,
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: AuthExpiredInterceptor,
+			multi: true,
+			deps: [
+				StateStorageService,
+				Injector
+			]
+		},
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: ErrorHandlerInterceptor,
+			multi: true,
+			deps: [
+				JhiEventManager
+			]
+		},
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: NotificationInterceptor,
+			multi: true,
+			deps: [
+				Injector
+			]
+		}
+	],
+	bootstrap: [JhiMainComponent]
 })
 export class ReservationAppModule {
 }
