@@ -1,5 +1,8 @@
-<h2>Réservations</h2>
-
+<span class="actions">
+	<span class="btn btn-primary"
+		  [routerLink]="['/', { outlets: { popup: 'user-reservation-new'} }]"><i class="fa fa-plus"></i></span>
+</span>
+<h2>Reservations</h2>
 <table class="table">
 	<tr>
 		<th>Start</th>
@@ -13,9 +16,13 @@
 		<td>{{reservation.duration}}</td>
 		<td>{{reservation.resource.name}}</td>
 		<td>{{reservation.user|username}}</td>
-		<td *ngIf="reservation.canEdit">
-			<span class="btn btn-primary"><i class="fa fa-edit"></i></span>
-			<span class="btn btn-danger"><i class="fa fa-trash"></i></span>
+		<td *ngIf="reservation.canEdit" class="actions">
+			<span class="btn btn-primary"
+				  [routerLink]="['/', { outlets: { popup: 'user-reservation/'+ reservation.id + '/edit'} }]">
+				<i class="fa fa-edit"></i></span>
+			<span class="btn btn-danger"
+				  [routerLink]="['/', { outlets: { popup: 'user-reservation/'+ reservation.id + '/delete'} }]">
+				<i class="fa fa-trash"></i></span>
 		</td>
 		<td *ngIf="!reservation.canEdit">
 		</td>

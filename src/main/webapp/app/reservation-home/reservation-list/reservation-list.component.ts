@@ -4,7 +4,7 @@ import {ReservationHomeDatastoreService} from '../reservation-home-datastore.ser
 @Component({
 	selector: 'jhi-reservation-list',
 	templateUrl: './reservation-list.component.html',
-	styles: []
+	styleUrls: ['./reservation-list.component.css']
 })
 export class ReservationListComponent implements OnInit {
 
