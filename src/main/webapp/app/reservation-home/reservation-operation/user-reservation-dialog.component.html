@@ -1,4 +1,4 @@
-<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+<form [formGroup]="reservationForm" (ngSubmit)="save()">
 
 	<div class="modal-header">
 		<h4 class="modal-title" id="myReservationLabel"
@@ -9,47 +9,54 @@
 	</div>
 	<div class="modal-body">
 		<jhi-alert-error></jhi-alert-error>
+
+		<div class="form-group">
+			<label class="form-control-label" jhiTranslate="reservationApp.reservation.resource" for="field_resource">Resource</label>
+			<select class="form-control" id="field_resource" formControlName="resourceId">
+				<option *ngFor="let resourceOption of resources; trackBy: resourceId" [ngValue]="resourceOption.id">
+					{{resourceOption.name}}
+				</option>
+			</select>
+		</div>
+
 		<div class="form-group">
 			<label class="form-control-label" jhiTranslate="reservationApp.reservation.start"
 				   for="field_timestampStart">Timestamp Start</label>
 			<div class="d-flex">
-				<input id="field_timestampStart" type="datetime-local" class="form-control" name="timestampStart"
-					   [(ngModel)]="dateStart"
-				/>
+				<input id="field_timestampStart" type="datetime-local" class="form-control"
+					   [readonly]="!reservationForm.value.resourceId"
+					   formControlName="dateStart"/>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="form-control-label" jhiTranslate="reservationApp.reservation.duration"
 				   for="field_timestampEnd">Timestamp End</label>
 			<div class="d-flex">
-				<input id="field_timestampEnd" type="number" class="form-control" name="duration"
-					   [(ngModel)]="durationMin"/>
+				<input id="field_timestampEnd" type="number" class="form-control"
+					   [max]="resourceType?.maxTimeSec/60"
+					   [min]="resourceType?.minTimeSec/60"
+					   [readonly]="!reservationForm.value.resourceId" formControlName="durationMin"/>
 				<div class="input-group-append">
 					<span class="input-group-text">Minutes</span>
 				</div>
 			</div>
+			<small class="form-text text-muted">Mininum: {{resourceType?.minTimeSec/60}} minutes, Maximum:
+				{{resourceType?.maxTimeSec/60}} minutes
+			</small>
 		</div>
-
-		<div class="form-group">
-			<label class="form-control-label" jhiTranslate="reservationApp.reservation.resource" for="field_resource">Resource</label>
-			<select class="form-control" id="field_resource" name="resource" [(ngModel)]="reservation.resourceId">
-				<option [ngValue]="null"></option>
-				<option [ngValue]="resourceOption.id"
-						*ngFor="let resourceOption of resources; trackBy: trackResourceById">{{resourceOption.name}}
-				</option>
-			</select>
-		</div>
-		<div class="form-group">
+		<div class="form-group" *ngIf="reservation.resourceId">
 			<label class="form-control-label" jhiTranslate="reservationApp.reservation.user"
 				   for="field_user">User</label>
-			<input id="field_user" type="text" readonly disabled class="form-control" [value]="reservation.user|username"/>
+			<input id="field_user" type="text" readonly disabled class="form-control"
+				   [value]="reservation.user|username"/>
 		</div>
+		<pre>{{reservationForm.value|json}}</pre>
 	</div>
 	<div class="modal-footer">
 		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
 			<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
 		</button>
-		<button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+		<button type="submit" [disabled]="reservationForm.invalid || isSaving" class="btn btn-primary">
 			<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
 		</button>
 	</div>

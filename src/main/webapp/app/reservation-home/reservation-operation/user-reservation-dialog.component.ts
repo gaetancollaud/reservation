@@ -1,11 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
-
 import {Observable} from 'rxjs/Observable';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {JhiAlertService, JhiEventManager} from 'ng-jhipster';
-
 import {User} from '../../shared';
 import {Reservation} from '../../entities/reservation';
 import {Resource} from '../../entities/resource';
@@ -14,6 +12,28 @@ import {UserReservationPopupService} from '../user-reservation-popup.service';
 import {SubscriptionHelper} from '../../utils/subscription-helper';
 import * as moment from 'moment';
 import {DatePipe} from '@angular/common';
+import {ResourceType} from '../../entities/resource-type';
+import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import 'rxjs/add/operator/first';
+import 'rxjs/add/operator/delay';
+
+export class ReservationForm {
+
+	public static fromReservation(r: ReservationExtended, datePipe: DatePipe): ReservationForm {
+		let durationMin = moment.duration(moment(r.timestampEnd).diff(moment(r.timestampStart))).asMinutes();
+		if (durationMin === 0) {
+			durationMin = 60;
+		}
+		const dateStart = datePipe.transform(r.timestampStart, 'yyyy-MM-ddTHH:mm:ss');
+		return new ReservationForm(r.resourceId || 0, dateStart, durationMin);
+	}
+
+	constructor(public resourceId: number,
+				public dateStart: string,
+				public durationMin: number) {
+	}
+
+}
 
 @Component({
 	selector: 'jhi-user-reservation-dialog',
@@ -21,33 +41,60 @@ import {DatePipe} from '@angular/common';
 })
 export class UserReservationDialogComponent extends SubscriptionHelper implements OnInit, OnDestroy {
 
-	reservation: ReservationExtended;
-	isSaving: boolean;
+	public isSaving: boolean;
 
-	resources: Resource[];
-	durationMin: number;
-	dateStart: string;
+	public reservation: Reservation;
 
-	users: User[];
+	public resources: Resource[];
+	public durationMin: number;
+	public dateStart: string;
+	public resourceType: ResourceType;
+
+	public reservationForm: FormGroup;
 
 	constructor(
 		private datePipe: DatePipe,
 		public activeModal: NgbActiveModal,
 		private jhiAlertService: JhiAlertService,
 		private datastore: ReservationHomeDatastoreService,
-		private eventManager: JhiEventManager
+		private eventManager: JhiEventManager,
+		private fb: FormBuilder
 	) {
 		super();
 	}
 
 	ngOnInit() {
+		this.reservationForm = this.fb.group({
+			resourceId: ['', Validators.required],
+			dateStart: ['', Validators.required],
+			durationMin: ['', [
+				Validators.required,
+				(ctrl: AbstractControl) => {
+					if (!this.resourceType) {
+						return {noResource: 'noResource'};
+					}
+					const valueSec = ctrl.value ? parseInt(ctrl.value, 10) * 60 : 0;
+					if (valueSec < this.resourceType.minTimeSec) {
+						return {tooSmall: 'tooSmall'};
+					}
+					if (valueSec > this.resourceType.maxTimeSec) {
+						return {tooBig: 'tooBig'};
+					}
+				}]]
+		});
+		this.addSubscription(this.reservationForm.valueChanges.delay(1).subscribe((v) => {
+			console.log('form value changed');
+			this.updateMaxDuration();
+		}));
 		this.addSubscription(this.datastore.operation.subscribe((op) => {
 			this.reservation = op.reservation;
-			this.durationMin = moment.duration(moment(op.reservation.timestampEnd).diff(moment(op.reservation.timestampStart))).asMinutes();
-			this.dateStart = this.datePipe.transform(op.reservation.timestampStart, 'yyyy-MM-ddTHH:mm:ss');
+			this.reservationForm.setValue(ReservationForm.fromReservation(op.reservation, this.datePipe));
 		}));
 		this.addSubscription(this.datastore.resources
-			.subscribe((list) => this.resources = list));
+			.subscribe((list) => {
+				this.resources = list;
+				this.updateMaxDuration();
+			}));
 	}
 
 	ngOnDestroy(): void {
@@ -60,7 +107,24 @@ export class UserReservationDialogComponent extends SubscriptionHelper implement
 
 	save() {
 		this.isSaving = true;
+		const formValue = this.reservationForm.value;
+		this.reservation.timestampStart = new Date(formValue.dateStart).getTime();
+		this.reservation.timestampEnd = this.reservation.timestampStart + formValue.durationMin * 60 * 1000;
+
 		this.subscribeToSaveResponse(this.datastore.save(this.reservation));
+	}
+
+	updateMaxDuration() {
+		if (this.resources) {
+			const resource = this.resources.find((r) => r.id === this.reservationForm.value.resourceId);
+			if (resource) {
+				this.datastore.resourceTypes
+					.first()
+					.subscribe((types) => {
+						this.resourceType = types.find((t) => t.id === resource.typeId);
+					});
+			}
+		}
 	}
 
 	private subscribeToSaveResponse(result: Observable<Reservation>) {

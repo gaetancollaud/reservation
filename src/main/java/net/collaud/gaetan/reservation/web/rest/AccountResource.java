@@ -65,7 +65,7 @@ public class AccountResource {
                     .orElseThrow(() -> new InternalServerErrorException("User could not be found"));
             }
         } else {
-            throw new InternalServerErrorException("User could not be found");
+        	return null;
         }
     }
 }

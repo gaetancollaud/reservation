@@ -11,6 +11,7 @@ import {Resource, ResourceService} from '../entities/resource';
 import {Subject} from 'rxjs/Subject';
 import {SubscriptionHelper} from '../utils/subscription-helper';
 import {EntityResponseType} from '../entities/resource/resource.service';
+import {ResourceType, ResourceTypeService} from '../entities/resource-type';
 
 export class ReservationExtended extends Reservation {
 	public resource: Resource;
@@ -59,11 +60,14 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 	private _searchResult: Subject<HttpResponse<Reservation[]>>;
 	private _search: BehaviorSubject<ReservationCriteria>;
 	private _resources: BehaviorSubject<Resource[]>;
+	private _resourceTypes: BehaviorSubject<ResourceType[]>;
 
 	constructor(private principal: Principal, private reservationService: ReservationService,
-				private resourceService: ResourceService, private userService: UserService) {
+				private resourceService: ResourceService, private userService: UserService,
+				private resourceTypeService: ResourceTypeService) {
 		super();
 		this._resources = new BehaviorSubject<Resource[]>(null);
+		this._resourceTypes = new BehaviorSubject<ResourceType[]>(null);
 		this._operation = new BehaviorSubject<ReservationOperation>(null);
 		this._reservations = new BehaviorSubject<ReservationExtended[]>(null);
 		this._searchResult = new Subject();
@@ -73,10 +77,11 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 	}
 
 	public start(): void {
+		this.resourceTypeService.query().subscribe((res) => this._resourceTypes.next(res.body));
 		this.addSubscription(this.search.subscribe((criteria) => this.updateSearch()));
-
+		const userIdentity = this.principal.isAuthenticated() ? Observable.fromPromise(this.principal.identity()) : Observable.of(null);
 		this.addSubscription(Observable.combineLatest(this._searchResult, this.resourceService.query(), this.userService.query(),
-			Observable.fromPromise(this.principal.identity()))
+			userIdentity)
 			.subscribe((res) => {
 				const reservations: Reservation[] = res[0].body;
 				const resources: Resource[] = res[1].body;
@@ -133,8 +138,12 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 		return this._operation;
 	}
 
-	public get resources(): BehaviorSubject<Resource[]> {
-		return this._resources;
+	public get resources(): Observable<Resource[]> {
+		return this._resources.filter((v) => !!v);
+	}
+
+	public get resourceTypes(): Observable<ResourceType[]> {
+		return this._resourceTypes.filter((v) => !!v);
 	}
 
 	public save(reservation: Reservation): Observable<Reservation> {
