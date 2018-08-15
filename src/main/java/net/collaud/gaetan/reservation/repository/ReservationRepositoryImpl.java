@@ -20,26 +20,29 @@ import java.util.List;
 @Repository
 public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
 
-    private QReservation RESERVATION = QReservation.reservation;
+	private QReservation RESERVATION = QReservation.reservation;
 
-    @PersistenceContext
-    private EntityManager em;
+	@PersistenceContext
+	private EntityManager em;
 
-    @Override
-    public List<Reservation> search(ReservationCriteria criteria) {
-        List<Predicate> predicates = new ArrayList<>();
+	@Override
+	public List<Reservation> search(ReservationCriteria criteria) {
+		List<Predicate> predicates = new ArrayList<>();
 
-        if(criteria.getFrom()!=null){
-            predicates.add(RESERVATION.timestampEnd.after(criteria.getFrom()));
-        }
-        if(criteria.getTo()!=null){
-            predicates.add(RESERVATION.timestampStart.before(criteria.getTo()));
-        }
+		if (criteria.getFrom() != null) {
+			predicates.add(RESERVATION.timestampEnd.after(criteria.getFrom()));
+		}
+		if (criteria.getTo() != null) {
+			predicates.add(RESERVATION.timestampStart.before(criteria.getTo()));
+		}
+		if (criteria.getResourceId() != null) {
+			predicates.add(RESERVATION.resource.id.eq(criteria.getResourceId()));
+		}
 
-        return new JPAQuery<Reservation>(em)
-            .select(RESERVATION)
-            .from(RESERVATION)
-            .where(predicates.toArray(new Predicate[predicates.size()]))
-            .fetch();
-    }
+		return new JPAQuery<Reservation>(em)
+			.select(RESERVATION)
+			.from(RESERVATION)
+			.where(predicates.toArray(new Predicate[predicates.size()]))
+			.fetch();
+	}
 }

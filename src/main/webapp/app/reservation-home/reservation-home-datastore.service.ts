@@ -79,7 +79,7 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 	public start(): void {
 		this.resourceTypeService.query().subscribe((res) => this._resourceTypes.next(res.body));
 		this.addSubscription(this.search.subscribe((criteria) => this.updateSearch()));
-		const userIdentity = this.principal.isAuthenticated() ? Observable.fromPromise(this.principal.identity()) : Observable.of(null);
+		const userIdentity = Observable.fromPromise(this.principal.identity());
 		this.addSubscription(Observable.combineLatest(this._searchResult, this.resourceService.query(), this.userService.query(),
 			userIdentity)
 			.subscribe((res) => {
@@ -111,7 +111,7 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 
 						extended.user = users.find((u: User) => u.id === reservation.userId);
 						extended.resource = resources.find((r: Resource) => r.id === reservation.resourceId);
-						extended.canEdit = identity && identity.id === reservation.userId;
+						extended.canEdit = identity && (identity.id === reservation.userId || !!identity.authorities.find(s => s === 'ROLE_RESERVATION_MANAGE'));
 
 						return extended;
 					}));
@@ -149,7 +149,7 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 	public save(reservation: Reservation): Observable<Reservation> {
 		let response: Observable<EntityResponseType>;
 		if (reservation.id) {
-			response = this.resourceService.update(reservation);
+			response = this.reservationService.update(reservation);
 		} else {
 			response = this.reservationService.create(reservation);
 		}
@@ -160,6 +160,7 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 
 	public delete(id: number): Observable<any> {
 		return this.reservationService.delete(id)
-			.map((r) => r.body);
+			.map((r) => r.body)
+			.do(() => this.updateSearch());
 	}
 }

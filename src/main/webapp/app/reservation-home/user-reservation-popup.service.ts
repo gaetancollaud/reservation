@@ -4,6 +4,7 @@ import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {DatePipe} from '@angular/common';
 import {Operation, ReservationHomeDatastoreService, ReservationOperation} from './reservation-home-datastore.service';
 import {Reservation} from '../entities/reservation';
+import 'rxjs/add/operator/take';
 
 @Injectable()
 export class UserReservationPopupService {
@@ -27,6 +28,7 @@ export class UserReservationPopupService {
 
 			if (id) {
 				this.datastore.reservations
+					.take(1)
 					.filter((list) => !!list)
 					.subscribe((list) => {
 						const theOne = list.find((r) => r.id === id);

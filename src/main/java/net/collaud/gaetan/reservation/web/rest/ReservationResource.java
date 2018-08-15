@@ -61,11 +61,9 @@ public class ReservationResource {
     @Timed
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) throws URISyntaxException {
         log.debug("REST request to save Reservation : {}", reservationDTO);
-        if (reservationDTO.getId() != null) {
-            throw new BadRequestAlertException("A new reservation cannot already have an ID", ENTITY_NAME, "idexists");
-        }
+        reservationDTO.setId(0L);
         Reservation reservation = reservationMapper.toEntity(reservationDTO);
-        reservation = reservationService.editReservation(reservation);
+        reservation = reservationService.addReservation(reservation);
         ReservationDTO result = reservationMapper.toDto(reservation);
         return ResponseEntity.created(new URI("/api/reservations/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -89,7 +87,7 @@ public class ReservationResource {
             return createReservation(reservationDTO);
         }
         Reservation reservation = reservationMapper.toEntity(reservationDTO);
-        reservation = reservationService.addReservation(reservation);
+        reservation = reservationService.editReservation(reservation);
         ReservationDTO result = reservationMapper.toDto(reservation);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, reservationDTO.getId().toString()))
@@ -142,7 +140,7 @@ public class ReservationResource {
     @Timed
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         log.debug("REST request to delete Reservation : {}", id);
-        reservationRepository.delete(id);
+        reservationService.deleteReservation(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

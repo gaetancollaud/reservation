@@ -21,10 +21,11 @@ export class ReservationForm {
 	public static fromReservation(r: ReservationExtended, datePipe: DatePipe): ReservationForm {
 		const dateStartDate = datePipe.transform(r.timestampStart, 'yyyy-MM-dd');
 		const dateStartTime = 1830;
-		return new ReservationForm(r.resourceId || 0, dateStartDate, dateStartTime, 60 * 60);
+		return new ReservationForm(r.id || 0, r.resourceId || 0, dateStartDate, dateStartTime, 60 * 60);
 	}
 
-	constructor(public resourceId: number,
+	constructor(public id: number,
+				public resourceId: number,
 				public dateStartDate: string,
 				public dateStartTime: number,
 				public durationSec: number) {
@@ -98,6 +99,7 @@ export class UserReservationDialogComponent extends SubscriptionHelper implement
 
 	ngOnInit() {
 		this.reservationForm = this.fb.group({
+			id: [''],
 			resourceId: ['', Validators.required],
 			dateStartDate: ['', Validators.required],
 			dateStartTime: [1800, Validators.required],
@@ -138,19 +140,21 @@ export class UserReservationDialogComponent extends SubscriptionHelper implement
 	}
 
 	updateMaxDuration() {
-		if (this.resources) {
-			const resource = this.resources.find((r) => r.id === this.reservationForm.value.resourceId);
-			if (resource) {
-				this.datastore.resourceTypes
-					.first()
-					.subscribe((types) => {
-						this.resourceType = types.find((t) => t.id === resource.typeId);
-						this.durations = this.allDurations
-							.filter((d: DurationItem) => d.sec >= this.resourceType.minTimeSec)
-							.filter((d: DurationItem) => d.sec <= this.resourceType.maxTimeSec);
-					});
+		setTimeout(() => {
+			if (this.resources) {
+				const resource = this.resources.find((r) => r.id === this.reservationForm.value.resourceId);
+				if (resource) {
+					this.datastore.resourceTypes
+						.first()
+						.subscribe((types) => {
+							this.resourceType = types.find((t) => t.id === resource.typeId);
+							this.durations = this.allDurations
+								.filter((d: DurationItem) => d.sec >= this.resourceType.minTimeSec)
+								.filter((d: DurationItem) => d.sec <= this.resourceType.maxTimeSec);
+						});
+				}
 			}
-		}
+		});
 	}
 
 	private subscribeToSaveResponse(result: Observable<Reservation>) {

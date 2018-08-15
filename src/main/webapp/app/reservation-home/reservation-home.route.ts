@@ -4,6 +4,7 @@ import {ReservationHomeComponent} from './';
 import {UserRouteAccessService} from '../shared';
 import {UserReservationPopupComponent} from './reservation-operation/user-reservation-dialog.component';
 import {ReservationDeletePopupComponent} from '../entities/reservation';
+import {UserReservationDeletePopupComponent} from './reservation-operation/user-reservation-delete-dialog.component';
 
 export const RESERVATION_HOME_ROUTES: Routes = [
 	{
@@ -36,7 +37,7 @@ export const RESERVATION_HOME_ROUTES: Routes = [
 	},
 	{
 		path: 'user-reservation/:id/delete',
-		component: ReservationDeletePopupComponent,
+		component: UserReservationDeletePopupComponent,
 		data: {
 			authorities: ['ROLE_RESERVATION_USE'],
 			pageTitle: 'reservationApp.reservation.home.title'
