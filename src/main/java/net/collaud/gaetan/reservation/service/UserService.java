@@ -165,6 +165,16 @@ public class UserService {
 		return new UserDTO(syncUserWithIdP(details, user));
 	}
 
+	public Optional<User> getCurrentUser() {
+		return SecurityUtils.getCurrentUserLogin()
+			.flatMap(userRepository::findOneByLogin);
+	}
+
+	public User getCurrentUserOrThrow() {
+		return getCurrentUser()
+			.orElseThrow(() -> new RuntimeException("No current user found"));
+	}
+
 	private User syncUserWithIdP(Map<String, Object> details, User user) {
 		// save account in to sync users between IdP and JHipster's local database
 		Optional<User> existingUser = userRepository.findOneByLogin(user.getLogin());

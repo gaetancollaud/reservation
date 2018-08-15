@@ -8,21 +8,25 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ReservationService {
-    @Autowired
-    private ReservationRepository reservationRepository;
+	@Autowired
+	private ReservationRepository reservationRepository;
 
-    public Reservation addReservation(Reservation reservation) {
-        SecurityUtils.getCurrentUserLogin();
-        return reservationRepository.save(reservation);
-    }
+	@Autowired
+	private UserService userService;
 
-    public Reservation editReservation(Reservation reservation) {
-        return reservationRepository.save(reservation);
-    }
+	public Reservation addReservation(Reservation reservation) {
+		reservation.setUser(userService.getCurrentUserOrThrow());
+		return reservationRepository.save(reservation);
+	}
 
-    public void deleteReservation(long reservationId) {
-        reservationRepository.delete(reservationId);
-    }
+	public Reservation editReservation(Reservation reservation) {
+		reservation.setUser(userService.getCurrentUserOrThrow());
+		return reservationRepository.save(reservation);
+	}
+
+	public void deleteReservation(long reservationId) {
+		reservationRepository.delete(reservationId);
+	}
 
 
 }

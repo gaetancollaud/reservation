@@ -10,29 +10,43 @@ import {Resource} from '../../entities/resource';
 import {Operation, ReservationExtended, ReservationHomeDatastoreService} from '../reservation-home-datastore.service';
 import {UserReservationPopupService} from '../user-reservation-popup.service';
 import {SubscriptionHelper} from '../../utils/subscription-helper';
-import * as moment from 'moment';
 import {DatePipe} from '@angular/common';
 import {ResourceType} from '../../entities/resource-type';
-import {AbstractControl, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/delay';
 
 export class ReservationForm {
 
 	public static fromReservation(r: ReservationExtended, datePipe: DatePipe): ReservationForm {
-		let durationMin = moment.duration(moment(r.timestampEnd).diff(moment(r.timestampStart))).asMinutes();
-		if (durationMin === 0) {
-			durationMin = 60;
-		}
-		const dateStart = datePipe.transform(r.timestampStart, 'yyyy-MM-ddTHH:mm:ss');
-		return new ReservationForm(r.resourceId || 0, dateStart, durationMin);
+		const dateStartDate = datePipe.transform(r.timestampStart, 'yyyy-MM-dd');
+		const dateStartTime = 1830;
+		return new ReservationForm(r.resourceId || 0, dateStartDate, dateStartTime, 60 * 60);
 	}
 
 	constructor(public resourceId: number,
-				public dateStart: string,
-				public durationMin: number) {
+				public dateStartDate: string,
+				public dateStartTime: number,
+				public durationSec: number) {
 	}
 
+}
+
+export class DurationItem {
+	constructor(public sec: number,
+				public name: string) {
+	}
+}
+
+export class StartTime {
+	public name;
+	public value;
+
+	constructor(public hour, public min) {
+		const zeroMin = min < 10 ? '0' : '';
+		this.name = `${hour}:${zeroMin}${min}`;
+		this.value = hour * 100 + min;
+	}
 }
 
 @Component({
@@ -46,9 +60,28 @@ export class UserReservationDialogComponent extends SubscriptionHelper implement
 	public reservation: Reservation;
 
 	public resources: Resource[];
-	public durationMin: number;
-	public dateStart: string;
+	public duration: number;
+	public dateStartDate: string;
+	public dateStartTime: string;
 	public resourceType: ResourceType;
+
+	public allDurations: DurationItem[] = [
+		new DurationItem(15 * 60, '15 minutes'),
+		new DurationItem(30 * 60, '30 minutes'),
+		new DurationItem(45 * 60, '45 minutes'),
+		new DurationItem(60 * 60, '1 heure'),
+		new DurationItem(1.5 * 60 * 60, '1.5 heure'),
+		new DurationItem(2 * 60 * 60, '2 heures'),
+		new DurationItem(3 * 60 * 60, '3 heures'),
+		new DurationItem(4 * 60 * 60, '4 heures'),
+	];
+	public durations: DurationItem[];
+	public startTimes: StartTime[] = [
+		new StartTime(18, 30),
+		new StartTime(19, 0),
+		new StartTime(19, 30),
+		new StartTime(20, 0)
+	];
 
 	public reservationForm: FormGroup;
 
@@ -66,24 +99,11 @@ export class UserReservationDialogComponent extends SubscriptionHelper implement
 	ngOnInit() {
 		this.reservationForm = this.fb.group({
 			resourceId: ['', Validators.required],
-			dateStart: ['', Validators.required],
-			durationMin: ['', [
-				Validators.required,
-				(ctrl: AbstractControl) => {
-					if (!this.resourceType) {
-						return {noResource: 'noResource'};
-					}
-					const valueSec = ctrl.value ? parseInt(ctrl.value, 10) * 60 : 0;
-					if (valueSec < this.resourceType.minTimeSec) {
-						return {tooSmall: 'tooSmall'};
-					}
-					if (valueSec > this.resourceType.maxTimeSec) {
-						return {tooBig: 'tooBig'};
-					}
-				}]]
+			dateStartDate: ['', Validators.required],
+			dateStartTime: [1800, Validators.required],
+			durationSec: ['', Validators.required],
 		});
 		this.addSubscription(this.reservationForm.valueChanges.delay(1).subscribe((v) => {
-			console.log('form value changed');
 			this.updateMaxDuration();
 		}));
 		this.addSubscription(this.datastore.operation.subscribe((op) => {
@@ -108,8 +128,11 @@ export class UserReservationDialogComponent extends SubscriptionHelper implement
 	save() {
 		this.isSaving = true;
 		const formValue = this.reservationForm.value;
-		this.reservation.timestampStart = new Date(formValue.dateStart).getTime();
-		this.reservation.timestampEnd = this.reservation.timestampStart + formValue.durationMin * 60 * 1000;
+		this.reservation = formValue;
+		const dateStart = new Date(formValue.dateStartDate);
+		dateStart.setHours(Math.round(formValue.dateStartTime / 100), formValue.dateStartTime % 100);
+		this.reservation.timestampStart = dateStart.toISOString();
+		this.reservation.timestampEnd = new Date(dateStart.getTime() + formValue.durationSec * 1000).toISOString();
 
 		this.subscribeToSaveResponse(this.datastore.save(this.reservation));
 	}
@@ -122,6 +145,9 @@ export class UserReservationDialogComponent extends SubscriptionHelper implement
 					.first()
 					.subscribe((types) => {
 						this.resourceType = types.find((t) => t.id === resource.typeId);
+						this.durations = this.allDurations
+							.filter((d: DurationItem) => d.sec >= this.resourceType.minTimeSec)
+							.filter((d: DurationItem) => d.sec <= this.resourceType.maxTimeSec);
 					});
 			}
 		}

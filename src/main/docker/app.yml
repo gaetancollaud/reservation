@@ -1,7 +1,7 @@
 version: '2'
 services:
     reservation-app:
-        image: reservation
+        image: gaetancollaud/reservation
         environment:
             - SPRING_PROFILES_ACTIVE=prod,swagger
             - SPRING_DATASOURCE_URL=jdbc:mysql://reservation-mysql:3306/reservation?useUnicode=true&characterEncoding=utf8&useSSL=false

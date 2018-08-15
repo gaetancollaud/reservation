@@ -154,7 +154,8 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 			response = this.reservationService.create(reservation);
 		}
 		return response
-			.map((r) => r.body);
+			.map((r) => r.body)
+			.do(() => this.updateSearch());
 	}
 
 	public delete(id: number): Observable<any> {

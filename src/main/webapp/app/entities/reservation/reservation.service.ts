@@ -81,10 +81,13 @@ export class ReservationService {
 	 */
 	private convert(reservation: Reservation): Reservation {
 		const copy: Reservation = Object.assign({}, reservation);
+		if (!Number.isInteger(reservation.timestampStart)) {
+			copy.timestampStart = this.dateUtils.toDate(reservation.timestampStart);
+		}
 
-		copy.timestampStart = this.dateUtils.toDate(reservation.timestampStart);
-
-		copy.timestampEnd = this.dateUtils.toDate(reservation.timestampEnd);
+		if (!Number.isInteger(reservation.timestampEnd)) {
+			copy.timestampEnd = this.dateUtils.toDate(reservation.timestampEnd);
+		}
 		return copy;
 	}
 }

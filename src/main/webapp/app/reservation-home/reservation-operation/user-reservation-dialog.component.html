@@ -13,7 +13,7 @@
 		<div class="form-group">
 			<label class="form-control-label" jhiTranslate="reservationApp.reservation.resource" for="field_resource">Resource</label>
 			<select class="form-control" id="field_resource" formControlName="resourceId">
-				<option *ngFor="let resourceOption of resources; trackBy: resourceId" [ngValue]="resourceOption.id">
+				<option *ngFor="let resourceOption of resources" [ngValue]="resourceOption.id">
 					{{resourceOption.name}}
 				</option>
 			</select>
@@ -21,28 +21,27 @@
 
 		<div class="form-group">
 			<label class="form-control-label" jhiTranslate="reservationApp.reservation.start"
-				   for="field_timestampStart">Timestamp Start</label>
+				   for="field_timestampStartDate">Timestamp Start</label>
 			<div class="d-flex">
-				<input id="field_timestampStart" type="datetime-local" class="form-control"
-					   [readonly]="!reservationForm.value.resourceId"
-					   formControlName="dateStart"/>
+				<input id="field_timestampStartDate" type="date" class="form-control"
+					   formControlName="dateStartDate"/>
+				<select id="field_timestampStartTime" class="form-control" formControlName="dateStartTime">
+					<option *ngFor="let startTime of startTimes" [ngValue]="startTime.value">
+						{{startTime.name}}
+					</option>
+				</select>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="form-control-label" jhiTranslate="reservationApp.reservation.duration"
-				   for="field_timestampEnd">Timestamp End</label>
+				   for="field_duration">Duration</label>
 			<div class="d-flex">
-				<input id="field_timestampEnd" type="number" class="form-control"
-					   [max]="resourceType?.maxTimeSec/60"
-					   [min]="resourceType?.minTimeSec/60"
-					   [readonly]="!reservationForm.value.resourceId" formControlName="durationMin"/>
-				<div class="input-group-append">
-					<span class="input-group-text">Minutes</span>
-				</div>
+				<select id="field_duration" class="form-control" formControlName="durationSec">
+					<option *ngFor="let duration of durations" [ngValue]="duration.sec">
+						{{duration.name}}
+					</option>
+				</select>
 			</div>
-			<small class="form-text text-muted">Mininum: {{resourceType?.minTimeSec/60}} minutes, Maximum:
-				{{resourceType?.maxTimeSec/60}} minutes
-			</small>
 		</div>
 		<div class="form-group" *ngIf="reservation.resourceId">
 			<label class="form-control-label" jhiTranslate="reservationApp.reservation.user"
