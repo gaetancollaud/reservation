@@ -6,7 +6,7 @@ import {SERVER_API_URL} from '../../app.constants';
 @Injectable()
 export class AuthServerProvider {
 
-	private readonly authServer = 'https://keycloak.collaud.me/auth/';
+	private readonly authServer = 'https://auth.fablab-fribourg.ch/auth/';
 
 	constructor(private http: HttpClient) {
 	}

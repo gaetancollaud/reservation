@@ -254,7 +254,7 @@ public class UserService {
 			user.setLangKey((String) details.get("langKey"));
 		} else if (details.get("locale") != null) {
 			String locale = (String) details.get("locale");
-			String langKey = locale.substring(0, locale.indexOf("-"));
+			String langKey = locale.contains("-") ? locale.substring(0, locale.indexOf("-")) : locale;
 			user.setLangKey(langKey);
 		}
 		if (details.get("picture") != null) {

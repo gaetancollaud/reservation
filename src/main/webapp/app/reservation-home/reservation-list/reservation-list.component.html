@@ -2,13 +2,13 @@
 	<span class="btn btn-primary" *jhiHasAnyAuthority="'ROLE_RESERVATION_USE'"
 		  [routerLink]="['/', { outlets: { popup: 'user-reservation-new'} }]"><i class="fa fa-plus"></i></span>
 </span>
-<h2>Reservations</h2>
+<h2>Réservations</h2>
 <table class="table">
 	<tr>
-		<th>Start</th>
-		<td>Duration</td>
+		<th>Début</th>
+		<td>Durée</td>
 		<td>Resource</td>
-		<td>Who</td>
+		<td>Qui</td>
 		<td></td>
 	</tr>
 	<tr *ngFor="let reservation of datastore.reservations|async">
@@ -28,5 +28,3 @@
 		</td>
 	</tr>
 </table>
-
-<!--<pre>{{datastore.reservations|async|json}}</pre>-->

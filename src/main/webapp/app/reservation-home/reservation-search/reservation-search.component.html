@@ -1,16 +1,14 @@
 <form class="form" [formGroup]="formGroup">
 	<div class="form-group">
-		<label>From</label>
+		<label>De</label>
 		<input formControlName="from" type="date" class="form-control"/>
 	</div>
 	<div class="form-group">
-		<label>To</label>
+		<label>à</label>
 		<input formControlName="to" type="date" class="form-control"/>
 	</div>
 </form>
 
-<div class="btn btn-primary" (click)="selectDateUnit('month')">This Month</div>
-<div class="btn btn-primary" (click)="selectDateUnit('week')">This week</div>
-<div class="btn btn-primary" (click)="selectDateUnit('day')">Today</div>
-
-<!--<pre>{{formGroup.value|json}}</pre>-->
+<div class="btn btn-primary" (click)="selectDateUnit('month')">Ce mois</div>
+<div class="btn btn-primary" (click)="selectDateUnit('week')">Cette semaine</div>
+<div class="btn btn-primary" (click)="selectDateUnit('day')">Aujourd'hui</div>

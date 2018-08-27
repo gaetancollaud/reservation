@@ -111,7 +111,8 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 
 						extended.user = users.find((u: User) => u.id === reservation.userId);
 						extended.resource = resources.find((r: Resource) => r.id === reservation.resourceId);
-						extended.canEdit = identity && (identity.id === reservation.userId || !!identity.authorities.find(s => s === 'ROLE_RESERVATION_MANAGE'));
+						extended.canEdit = identity && (identity.id === reservation.userId || !!identity.authorities
+							.find((s: string) => s === 'ROLE_RESERVATION_MANAGE'));
 
 						return extended;
 					}));
