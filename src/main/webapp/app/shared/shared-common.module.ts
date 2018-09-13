@@ -1,7 +1,7 @@
 import {NgModule, LOCALE_ID} from '@angular/core';
 import {Title} from '@angular/platform-browser';
 import {registerLocaleData} from '@angular/common';
-import locale from '@angular/common/locales/en';
+import locale from '@angular/common/locales/fr';
 
 import {
 	ReservationSharedLibsModule,
@@ -37,6 +37,6 @@ import {
 })
 export class ReservationSharedCommonModule {
 	constructor() {
-		registerLocaleData(locale);
+		registerLocaleData(locale, 'fr');
 	}
 }

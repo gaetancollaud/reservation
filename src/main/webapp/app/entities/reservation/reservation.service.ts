@@ -81,13 +81,23 @@ export class ReservationService {
 	 */
 	private convert(reservation: Reservation): Reservation {
 		const copy: Reservation = Object.assign({}, reservation);
-		if (!Number.isInteger(reservation.timestampStart)) {
-			copy.timestampStart = this.dateUtils.toDate(reservation.timestampStart);
-		}
-
-		if (!Number.isInteger(reservation.timestampEnd)) {
-			copy.timestampEnd = this.dateUtils.toDate(reservation.timestampEnd);
-		}
+		copy.timestampStart = reservation.timestampStart;
+		copy.timestampEnd = reservation.timestampEnd;
+		// if (!Number.isInteger(reservation.timestampStart)) {
+		// 	if (reservation.timestampStart instanceof Date) {
+		// 		copy.timestampStart = reservation.timestampStart.getTime();
+		// 	} else {
+		// 		copy.timestampStart = this.dateUtils.toDate(reservation.timestampStart);
+		// 	}
+		// }
+		//
+		// if (!Number.isInteger(reservation.timestampEnd)) {
+		// 	if (reservation.timestampStart instanceof Date) {
+		// 		copy.timestampEnd = reservation.timestampEnd.getTime();
+		// 	} else {
+		// 		copy.timestampEnd = this.dateUtils.toDate(reservation.timestampEnd);
+		// 	}
+		// }
 		return copy;
 	}
 }
