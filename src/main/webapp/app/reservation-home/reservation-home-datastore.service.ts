@@ -15,8 +15,12 @@ import {ResourceType, ResourceTypeService} from '../entities/resource-type';
 
 
 export class ReservationGrouped {
-	constructor(private _key: string, private _reservations: ReservationExtended[]) {
+	constructor(private _date: Date, private _key: string, private _reservations: ReservationExtended[]) {
 
+	}
+
+	get date(): Date {
+		return this._date;
 	}
 
 	get key(): string {
@@ -71,7 +75,7 @@ export class ReservationOperation {
 export class ReservationHomeDatastoreService extends SubscriptionHelper {
 
 	private _reservationsGrouped: BehaviorSubject<ReservationGrouped[]>;
-	// private _reservations: BehaviorSubject<ReservationExtended[]>;
+	private _reservations: BehaviorSubject<ReservationExtended[]>;
 	private _operation: BehaviorSubject<ReservationOperation>;
 	private _searchResult: Subject<HttpResponse<Reservation[]>>;
 	private _search: BehaviorSubject<ReservationCriteria>;
@@ -85,7 +89,7 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 		this._resources = new BehaviorSubject<Resource[]>(null);
 		this._resourceTypes = new BehaviorSubject<ResourceType[]>(null);
 		this._operation = new BehaviorSubject<ReservationOperation>(null);
-		// this._reservations = new BehaviorSubject<ReservationExtended[]>(null);
+		this._reservations = new BehaviorSubject<ReservationExtended[]>(null);
 		this._reservationsGrouped = new BehaviorSubject<ReservationGrouped[]>(null);
 		this._searchResult = new Subject();
 		this._search = new BehaviorSubject<ReservationCriteria>(new ReservationCriteria(
@@ -107,7 +111,7 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 
 				this._resources.next(resources);
 
-				let reservationExtendeds = reservations
+				const reservationExtendeds = reservations
 					.sort((l, r) => -moment(l.timestampStart).diff(moment(r.timestampStart)))
 					.map((reservation: Reservation) => {
 						const extended: ReservationExtended = new ReservationExtended();
@@ -134,6 +138,7 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 						return extended;
 					});
 				this._reservationsGrouped.next(this.groupReservations(reservationExtendeds));
+				this._reservations.next(reservationExtendeds);
 			}));
 	}
 
@@ -145,9 +150,9 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 		this.reservationService.search(this._search.getValue()).subscribe((response) => this._searchResult.next(response));
 	}
 
-	// public get reservations(): BehaviorSubject<ReservationExtended[]> {
-	// 	return this._reservations;
-	// }
+	public get reservations(): BehaviorSubject<ReservationExtended[]> {
+		return this._reservations;
+	}
 
 	get reservationsGrouped(): BehaviorSubject<ReservationGrouped[]> {
 		return this._reservationsGrouped;
@@ -194,17 +199,19 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 		reservations.forEach((r: ReservationExtended) => {
 			const key = this.getGroupKey(r);
 			if (!map.has(key)) {
-				let group = new ReservationGrouped(key, []);
+				const group = new ReservationGrouped(r.timestampStart, key, []);
 				map.set(key, group);
-				grouped.push(group)
+				grouped.push(group);
 			}
 			map.get(key).reservations.push(r);
 		});
 
-		return grouped;
+		return grouped.sort((l, r) => l.date.getTime() - r.date.getTime());
 	}
 
 	private getGroupKey(reservation: Reservation): string {
-		return moment(reservation.timestampStart).format('DD/MM/YYYY');
+		const mom = moment(reservation.timestampStart);
+		return `${mom.format('DD/MM/YYYY')}`;
+		// return `${mom.fromNow()} (${mom.format('DD/MM/YYYY')})`;
 	}
 }

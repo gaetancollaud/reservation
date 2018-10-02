@@ -11,9 +11,9 @@
 		<td>Qui</td>
 		<td></td>
 	</tr>
-	<div *ngFor="let group of datastore.reservationsGrouped|async">
+	<tbody *ngFor="let group of datastore.reservationsGrouped|async">
 		<tr>
-			<td colspan="5">{{group.key}}</td>
+			<th class="group-name" colspan="5">{{group.key}}</th>
 		</tr>
 
 		<tr *ngFor="let reservation of group.reservations">
@@ -32,6 +32,6 @@
 			<td *ngIf="!reservation.canEdit">
 			</td>
 		</tr>
-	</div>
+	</tbody>
 
 </table>
