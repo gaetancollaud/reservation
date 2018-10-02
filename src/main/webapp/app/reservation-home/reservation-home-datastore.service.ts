@@ -13,6 +13,21 @@ import {SubscriptionHelper} from '../utils/subscription-helper';
 import {EntityResponseType} from '../entities/resource/resource.service';
 import {ResourceType, ResourceTypeService} from '../entities/resource-type';
 
+
+export class ReservationGrouped {
+	constructor(private _key: string, private _reservations: ReservationExtended[]) {
+
+	}
+
+	get key(): string {
+		return this._key;
+	}
+
+	get reservations(): ReservationExtended[] {
+		return this._reservations;
+	}
+}
+
 export class ReservationExtended extends Reservation {
 	public resource: Resource;
 	public user: User;
@@ -55,7 +70,8 @@ export class ReservationOperation {
 @Injectable()
 export class ReservationHomeDatastoreService extends SubscriptionHelper {
 
-	private _reservations: BehaviorSubject<ReservationExtended[]>;
+	private _reservationsGrouped: BehaviorSubject<ReservationGrouped[]>;
+	// private _reservations: BehaviorSubject<ReservationExtended[]>;
 	private _operation: BehaviorSubject<ReservationOperation>;
 	private _searchResult: Subject<HttpResponse<Reservation[]>>;
 	private _search: BehaviorSubject<ReservationCriteria>;
@@ -69,11 +85,12 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 		this._resources = new BehaviorSubject<Resource[]>(null);
 		this._resourceTypes = new BehaviorSubject<ResourceType[]>(null);
 		this._operation = new BehaviorSubject<ReservationOperation>(null);
-		this._reservations = new BehaviorSubject<ReservationExtended[]>(null);
+		// this._reservations = new BehaviorSubject<ReservationExtended[]>(null);
+		this._reservationsGrouped = new BehaviorSubject<ReservationGrouped[]>(null);
 		this._searchResult = new Subject();
 		this._search = new BehaviorSubject<ReservationCriteria>(new ReservationCriteria(
 			moment().startOf('week').toDate(),
-			moment().endOf('week').toDate()));
+			moment().add(1, 'month').endOf('week').toDate()));
 	}
 
 	public start(): void {
@@ -90,7 +107,7 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 
 				this._resources.next(resources);
 
-				this._reservations.next(reservations
+				let reservationExtendeds = reservations
 					.sort((l, r) => -moment(l.timestampStart).diff(moment(r.timestampStart)))
 					.map((reservation: Reservation) => {
 						const extended: ReservationExtended = new ReservationExtended();
@@ -115,7 +132,8 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 							.find((s: string) => s === 'ROLE_RESERVATION_MANAGE'));
 
 						return extended;
-					}));
+					});
+				this._reservationsGrouped.next(this.groupReservations(reservationExtendeds));
 			}));
 	}
 
@@ -127,8 +145,12 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 		this.reservationService.search(this._search.getValue()).subscribe((response) => this._searchResult.next(response));
 	}
 
-	public get reservations(): BehaviorSubject<ReservationExtended[]> {
-		return this._reservations;
+	// public get reservations(): BehaviorSubject<ReservationExtended[]> {
+	// 	return this._reservations;
+	// }
+
+	get reservationsGrouped(): BehaviorSubject<ReservationGrouped[]> {
+		return this._reservationsGrouped;
 	}
 
 	public get search(): BehaviorSubject<ReservationCriteria> {
@@ -163,5 +185,26 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 		return this.reservationService.delete(id)
 			.map((r) => r.body)
 			.do(() => this.updateSearch());
+	}
+
+	public groupReservations(reservations: ReservationExtended[]): ReservationGrouped[] {
+		const grouped: ReservationGrouped[] = [];
+
+		const map: Map<string, ReservationGrouped> = new Map<string, ReservationGrouped>();
+		reservations.forEach((r: ReservationExtended) => {
+			const key = this.getGroupKey(r);
+			if (!map.has(key)) {
+				let group = new ReservationGrouped(key, []);
+				map.set(key, group);
+				grouped.push(group)
+			}
+			map.get(key).reservations.push(r);
+		});
+
+		return grouped;
+	}
+
+	private getGroupKey(reservation: Reservation): string {
+		return moment(reservation.timestampStart).format('DD/MM/YYYY');
 	}
 }

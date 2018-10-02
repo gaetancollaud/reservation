@@ -11,20 +11,27 @@
 		<td>Qui</td>
 		<td></td>
 	</tr>
-	<tr *ngFor="let reservation of datastore.reservations|async">
-		<td>{{reservation.timestampStart|datetime}}</td>
-		<td>{{reservation.duration}}</td>
-		<td>{{reservation.resource.name}}</td>
-		<td>{{reservation.user|username}}</td>
-		<td *ngIf="reservation.canEdit" class="actions">
+	<div *ngFor="let group of datastore.reservationsGrouped|async">
+		<tr>
+			<td colspan="5">{{group.key}}</td>
+		</tr>
+
+		<tr *ngFor="let reservation of group.reservations">
+			<td>{{reservation.timestampStart|datetime}}</td>
+			<td>{{reservation.duration}}</td>
+			<td>{{reservation.resource.name}}</td>
+			<td>{{reservation.user|username}}</td>
+			<td *ngIf="reservation.canEdit" class="actions">
 			<span class="btn btn-primary"
 				  [routerLink]="['/', { outlets: { popup: 'user-reservation/'+ reservation.id + '/edit'} }]">
 				<i class="fa fa-edit"></i></span>
-			<span class="btn btn-danger"
-				  [routerLink]="['/', { outlets: { popup: 'user-reservation/'+ reservation.id + '/delete'} }]">
+				<span class="btn btn-danger"
+					  [routerLink]="['/', { outlets: { popup: 'user-reservation/'+ reservation.id + '/delete'} }]">
 				<i class="fa fa-trash"></i></span>
-		</td>
-		<td *ngIf="!reservation.canEdit">
-		</td>
-	</tr>
+			</td>
+			<td *ngIf="!reservation.canEdit">
+			</td>
+		</tr>
+	</div>
+
 </table>
