@@ -101,3 +101,5 @@ jhipster:
 # ===================================================================
 
 application:
+
+oauth2.issuer: https://keycloak.collaud.me/auth/realms/fablab

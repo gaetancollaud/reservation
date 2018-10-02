@@ -342,7 +342,20 @@
             <artifactId>querydsl-jpa</artifactId>
             <version>${querydsl.version}</version>
         </dependency>
-        <!-- jhipster-needle-maven-add-dependency -->
+
+		<dependency>
+			<groupId>org.mnode.ical4j</groupId>
+			<artifactId>ical4j</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mnode.ical4j</groupId>
+			<artifactId>ical4j-extensions</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+
+
+		<!-- jhipster-needle-maven-add-dependency -->
     </dependencies>
 
     <build>
