@@ -5,7 +5,7 @@ import {SERVER_API_URL} from '../../app.constants';
 
 import {JhiDateUtils} from 'ng-jhipster';
 
-import {Reservation, ReservationCriteria} from './reservation.model';
+import {Reservation, ReservationCriteria} from './index';
 import {createRequestOption} from '../../shared';
 
 export type EntityResponseType = HttpResponse<Reservation>;
