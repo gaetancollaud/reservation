@@ -25,6 +25,12 @@ public class Resource implements Serializable {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "calendar_link")
+    private String calendarLink;
+
+    @Column(name = "calendar_search_regex")
+    private String calendarSearchRegex;
+
     @ManyToOne
     private ResourceType type;
 
@@ -48,6 +54,32 @@ public class Resource implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCalendarLink() {
+        return calendarLink;
+    }
+
+    public Resource calendarLink(String calendarLink) {
+        this.calendarLink = calendarLink;
+        return this;
+    }
+
+    public void setCalendarLink(String calendarLink) {
+        this.calendarLink = calendarLink;
+    }
+
+    public String getCalendarSearchRegex() {
+        return calendarSearchRegex;
+    }
+
+    public Resource calendarSearchRegex(String calendarSearchRegex) {
+        this.calendarSearchRegex = calendarSearchRegex;
+        return this;
+    }
+
+    public void setCalendarSearchRegex(String calendarSearchRegex) {
+        this.calendarSearchRegex = calendarSearchRegex;
     }
 
     public ResourceType getType() {
@@ -89,6 +121,8 @@ public class Resource implements Serializable {
         return "Resource{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
+            ", calendarLink='" + getCalendarLink() + "'" +
+            ", calendarSearchRegex='" + getCalendarSearchRegex() + "'" +
             "}";
     }
 }

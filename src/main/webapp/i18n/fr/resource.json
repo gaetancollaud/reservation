@@ -17,6 +17,8 @@
                 "title": "Resource"
             },
             "name": "Name",
+            "calendarLink": "Calendar Link",
+            "calendarSearchRegex": "Calendar Search Regex",
             "type": "Type"
         }
     }

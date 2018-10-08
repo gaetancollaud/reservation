@@ -15,6 +15,10 @@ public class ResourceDTO implements Serializable {
 
     private String name;
 
+    private String calendarLink;
+
+    private String calendarSearchRegex;
+
     private Long typeId;
 
     public Long getId() {
@@ -31,6 +35,22 @@ public class ResourceDTO implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCalendarLink() {
+        return calendarLink;
+    }
+
+    public void setCalendarLink(String calendarLink) {
+        this.calendarLink = calendarLink;
+    }
+
+    public String getCalendarSearchRegex() {
+        return calendarSearchRegex;
+    }
+
+    public void setCalendarSearchRegex(String calendarSearchRegex) {
+        this.calendarSearchRegex = calendarSearchRegex;
     }
 
     public Long getTypeId() {
@@ -67,6 +87,8 @@ public class ResourceDTO implements Serializable {
         return "ResourceDTO{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
+            ", calendarLink='" + getCalendarLink() + "'" +
+            ", calendarSearchRegex='" + getCalendarSearchRegex() + "'" +
             "}";
     }
 }

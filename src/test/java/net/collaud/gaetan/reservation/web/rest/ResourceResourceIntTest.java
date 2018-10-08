@@ -43,6 +43,12 @@ public class ResourceResourceIntTest {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
+    private static final String DEFAULT_CALENDAR_LINK = "AAAAAAAAAA";
+    private static final String UPDATED_CALENDAR_LINK = "BBBBBBBBBB";
+
+    private static final String DEFAULT_CALENDAR_SEARCH_REGEX = "AAAAAAAAAA";
+    private static final String UPDATED_CALENDAR_SEARCH_REGEX = "BBBBBBBBBB";
+
     @Autowired
     private ResourceRepository resourceRepository;
 
@@ -84,7 +90,9 @@ public class ResourceResourceIntTest {
      */
     public static Resource createEntity(EntityManager em) {
         Resource resource = new Resource()
-            .name(DEFAULT_NAME);
+            .name(DEFAULT_NAME)
+            .calendarLink(DEFAULT_CALENDAR_LINK)
+            .calendarSearchRegex(DEFAULT_CALENDAR_SEARCH_REGEX);
         return resource;
     }
 
@@ -110,6 +118,8 @@ public class ResourceResourceIntTest {
         assertThat(resourceList).hasSize(databaseSizeBeforeCreate + 1);
         Resource testResource = resourceList.get(resourceList.size() - 1);
         assertThat(testResource.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(testResource.getCalendarLink()).isEqualTo(DEFAULT_CALENDAR_LINK);
+        assertThat(testResource.getCalendarSearchRegex()).isEqualTo(DEFAULT_CALENDAR_SEARCH_REGEX);
     }
 
     @Test
@@ -143,7 +153,9 @@ public class ResourceResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(resource.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].calendarLink").value(hasItem(DEFAULT_CALENDAR_LINK.toString())))
+            .andExpect(jsonPath("$.[*].calendarSearchRegex").value(hasItem(DEFAULT_CALENDAR_SEARCH_REGEX.toString())));
     }
 
     @Test
@@ -157,7 +169,9 @@ public class ResourceResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(resource.getId().intValue()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()));
+            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
+            .andExpect(jsonPath("$.calendarLink").value(DEFAULT_CALENDAR_LINK.toString()))
+            .andExpect(jsonPath("$.calendarSearchRegex").value(DEFAULT_CALENDAR_SEARCH_REGEX.toString()));
     }
 
     @Test
@@ -180,7 +194,9 @@ public class ResourceResourceIntTest {
         // Disconnect from session so that the updates on updatedResource are not directly saved in db
         em.detach(updatedResource);
         updatedResource
-            .name(UPDATED_NAME);
+            .name(UPDATED_NAME)
+            .calendarLink(UPDATED_CALENDAR_LINK)
+            .calendarSearchRegex(UPDATED_CALENDAR_SEARCH_REGEX);
         ResourceDTO resourceDTO = resourceMapper.toDto(updatedResource);
 
         restResourceMockMvc.perform(put("/api/resources")
@@ -193,6 +209,8 @@ public class ResourceResourceIntTest {
         assertThat(resourceList).hasSize(databaseSizeBeforeUpdate);
         Resource testResource = resourceList.get(resourceList.size() - 1);
         assertThat(testResource.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testResource.getCalendarLink()).isEqualTo(UPDATED_CALENDAR_LINK);
+        assertThat(testResource.getCalendarSearchRegex()).isEqualTo(UPDATED_CALENDAR_SEARCH_REGEX);
     }
 
     @Test

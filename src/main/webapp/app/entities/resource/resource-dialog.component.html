@@ -17,12 +17,22 @@
             <input type="text" class="form-control" name="name" id="field_name"
                 [(ngModel)]="resource.name" />
         </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="reservationApp.resource.calendarLink" for="field_calendarLink">Calendar Link</label>
+            <input type="text" class="form-control" name="calendarLink" id="field_calendarLink"
+                [(ngModel)]="resource.calendarLink" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="reservationApp.resource.calendarSearchRegex" for="field_calendarSearchRegex">Calendar Search Regex</label>
+            <input type="text" class="form-control" name="calendarSearchRegex" id="field_calendarSearchRegex"
+                [(ngModel)]="resource.calendarSearchRegex" />
+        </div>
 
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="reservationApp.resource.type" for="field_type">Type</label>
             <select class="form-control" id="field_type" name="type" [(ngModel)]="resource.typeId" >
                 <option [ngValue]="null"></option>
-                <option [ngValue]="resourceTypeOption.id" *ngFor="let resourceTypeOption of resourcetypes; trackBy: trackResourceTypeById">{{resourceTypeOption.name}}</option>
+                <option [ngValue]="resourceTypeOption.id" *ngFor="let resourceTypeOption of resourcetypes; trackBy: trackResourceTypeById">{{resourceTypeOption.id}}</option>
             </select>
         </div>
     </div>

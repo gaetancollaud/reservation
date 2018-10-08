@@ -8,6 +8,14 @@
         <dd>
             <span>{{resource.name}}</span>
         </dd>
+        <dt><span jhiTranslate="reservationApp.resource.calendarLink">Calendar Link</span></dt>
+        <dd>
+            <span>{{resource.calendarLink}}</span>
+        </dd>
+        <dt><span jhiTranslate="reservationApp.resource.calendarSearchRegex">Calendar Search Regex</span></dt>
+        <dd>
+            <span>{{resource.calendarSearchRegex}}</span>
+        </dd>
         <dt><span jhiTranslate="reservationApp.resource.type">Type</span></dt>
         <dd>
             <div *ngIf="resource.typeId">

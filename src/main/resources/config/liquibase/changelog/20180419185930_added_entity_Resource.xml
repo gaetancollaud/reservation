@@ -34,5 +34,17 @@
         </createTable>
         
     </changeSet>
+
+	<changeSet id="20181008" author="gc">
+		<addColumn tableName="resource">
+			<column name="calendar_link" type="varchar(255)">
+				<constraints nullable="true" />
+			</column>
+
+			<column name="calendar_search_regex" type="varchar(255)">
+				<constraints nullable="true" />
+			</column>
+		</addColumn>
+	</changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

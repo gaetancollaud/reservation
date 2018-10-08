@@ -12,6 +12,14 @@
         {
             "fieldName": "name",
             "fieldType": "String"
+        },
+        {
+            "fieldName": "calendarLink",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "calendarSearchRegex",
+            "fieldType": "String"
         }
     ],
     "changelogDate": "20180419185930",

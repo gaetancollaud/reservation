@@ -7,13 +7,13 @@ entity ResourceType {
 
 entity Resource {
 	name String
+    calendarLink String
+    calendarSearchRegex String
 }
 
 entity Reservation {
     timestampStart ZonedDateTime
     timestampEnd ZonedDateTime
-    calendarLink String
-    calendarSearchRegex String
 }
 
 relationship ManyToOne {

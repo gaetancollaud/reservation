@@ -18,6 +18,8 @@
             <tr>
             <th><span jhiTranslate="global.field.id">ID</span></th>
             <th><span jhiTranslate="reservationApp.resource.name">Name</span></th>
+            <th><span jhiTranslate="reservationApp.resource.calendarLink">Calendar Link</span></th>
+            <th><span jhiTranslate="reservationApp.resource.calendarSearchRegex">Calendar Search Regex</span></th>
             <th><span jhiTranslate="reservationApp.resource.type">Type</span></th>
             <th></th>
             </tr>
@@ -26,6 +28,8 @@
             <tr *ngFor="let resource of resources ;trackBy: trackId">
                 <td><a [routerLink]="['../resource', resource.id ]">{{resource.id}}</a></td>
                 <td>{{resource.name}}</td>
+                <td>{{resource.calendarLink}}</td>
+                <td>{{resource.calendarSearchRegex}}</td>
                 <td>
                     <div *ngIf="resource.typeId">
                         <a [routerLink]="['../resource-type', resource.typeId  ]" >{{resource.typeId}}</a>
