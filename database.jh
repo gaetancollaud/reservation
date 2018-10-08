@@ -12,6 +12,8 @@ entity Resource {
 entity Reservation {
     timestampStart ZonedDateTime
     timestampEnd ZonedDateTime
+    calendarLink String
+    calendarSearchRegex String
 }
 
 relationship ManyToOne {

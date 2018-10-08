@@ -13,7 +13,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.StringReader;
 import java.net.URI;
-import java.net.URL;
 
 @Service
 public class IcalLoaderService {
@@ -26,8 +25,8 @@ public class IcalLoaderService {
 	}
 
 
-	// todo add cache
-	public String loadIcal(String url) {
+	// TODO add cache
+	protected String loadIcal(String url) {
 		try {
 			String ical = restTemplate.getForObject(new URI(url), String.class);
 			return ical;
