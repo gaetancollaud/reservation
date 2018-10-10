@@ -1,5 +1,6 @@
 package net.collaud.gaetan.reservation.service;
 
+import net.collaud.gaetan.reservation.domain.Interval;
 import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.property.DtEnd;
@@ -25,13 +26,12 @@ public class CalendarService {
 		this.icalLoaderService = icalLoaderService;
 	}
 
-	public boolean isAllowed(Optional<String> regex, Instant instant) {
+	public boolean isAllowed(String icalUrl, Optional<String> regex, Interval requestedInterval) {
 		try {
-			String icalUrl = "https://calendar.google.com/calendar/ical/nulu08ntleed9c5peukoeaifl8%40group.calendar.google.com/public/basic.ics";
 
 			Calendar calendar = icalLoaderService.getCalendar(icalUrl);
 
-			Date dateToTest = new Date(instant.toEpochMilli());
+			Date dateToTest = new Date(requestedInterval.getStart().toEpochMilli());
 
 			ComponentList<CalendarComponent> components = calendar.getComponents();
 			return components.stream()
@@ -52,9 +52,11 @@ public class CalendarService {
 						Recur recur = ((RRule) rrule).getRecur();
 						Date nextDateStart = recur.getNextDate(dtstart, dateToTest);
 						Date nextDateEnd = recur.getNextDate(dtend, dateToTest);
-						return isInBetween(nextDateStart, nextDateEnd, instant);
+						Interval eventInterval = new Interval(nextDateStart.toInstant(), nextDateEnd.toInstant());
+						return eventInterval.canContains(requestedInterval);
 					} else {
-						return isInBetween(dtstart, dtend, instant);
+						Interval eventInterval = new Interval(dtstart.toInstant(), dtend.toInstant());
+						return eventInterval.canContains(requestedInterval);
 					}
 				});
 		} catch (Exception ex) {

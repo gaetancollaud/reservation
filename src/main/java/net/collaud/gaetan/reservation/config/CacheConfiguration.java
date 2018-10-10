@@ -1,6 +1,7 @@
 package net.collaud.gaetan.reservation.config;
 
 import io.github.jhipster.config.JHipsterProperties;
+import net.collaud.gaetan.reservation.service.IcalLoaderService;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.expiry.Duration;
@@ -37,6 +38,7 @@ public class CacheConfiguration {
     @Bean
     public JCacheManagerCustomizer cacheManagerCustomizer() {
         return cm -> {
+            cm.createCache(IcalLoaderService.CACHE_ICAL_NAME, jcacheConfiguration);
             cm.createCache(net.collaud.gaetan.reservation.repository.UserRepository.USERS_BY_LOGIN_CACHE, jcacheConfiguration);
             cm.createCache(net.collaud.gaetan.reservation.repository.UserRepository.USERS_BY_EMAIL_CACHE, jcacheConfiguration);
             cm.createCache(net.collaud.gaetan.reservation.domain.User.class.getName(), jcacheConfiguration);

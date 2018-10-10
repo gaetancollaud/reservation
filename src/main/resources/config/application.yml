@@ -68,6 +68,11 @@ spring:
 # export SECURITY_OAUTH2_CLIENT_CLIENT_ID="jhipster"
 # export SECURITY_OAUTH2_CLIENT_CLIENT_SECRET="38561a05"
 # ===================================================================
+logging:
+    level:
+        ROOT: WARN
+        net.fortuna.ical4j: WARN
+        net.collaud.gaetan.reservation.aop.logging: WARN
 
 oauth2.issuer: https://keycloak.collaud.me/auth/realms/fablab
 security:
