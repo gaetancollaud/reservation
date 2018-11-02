@@ -1,6 +1,6 @@
 <span class="actions">
 	<span class="btn btn-primary" *jhiHasAnyAuthority="'ROLE_RESERVATION_USE'"
-		  [routerLink]="['/', { outlets: { popup: 'user-reservation-new'} }]"><i class="fa fa-plus"></i></span>
+		  [routerLink]="['/', { outlets: { popup: 'user-reservation-new'} }]"><i class="fa fa-plus"></i> Ajouter une réservation</span>
 </span>
 <h2>Réservations</h2>
 <table class="table">
@@ -11,27 +11,31 @@
 		<td>Qui</td>
 		<td></td>
 	</tr>
-	<tbody *ngFor="let group of datastore.reservationsGrouped|async">
-		<tr>
-			<th class="group-name" colspan="5">{{group.key}}</th>
-		</tr>
+	<tbody *ngFor="let group of datastore.reservationsGrouped|async"
+		   [class.today]="group.key===todaysKey">
+	<tr>
+		<th class="group-name" colspan="5">
+			{{group.key}}
+			<span *ngIf="group.key===todaysKey">(Aujourd'hui)</span>
+		</th>
+	</tr>
 
-		<tr *ngFor="let reservation of group.reservations">
-			<td>{{reservation.timestampStart|datetime}}</td>
-			<td>{{reservation.duration}}</td>
-			<td>{{reservation.resource.name}}</td>
-			<td>{{reservation.user|username}}</td>
-			<td *ngIf="reservation.canEdit" class="actions">
+	<tr *ngFor="let reservation of group.reservations">
+		<td>{{reservation.timestampStart|datetime}}</td>
+		<td>{{reservation.duration}}</td>
+		<td>{{reservation.resource.name}}</td>
+		<td>{{reservation.user|username}}</td>
+		<td *ngIf="reservation.canEdit" class="table-actions">
 			<span class="btn btn-primary"
 				  [routerLink]="['/', { outlets: { popup: 'user-reservation/'+ reservation.id + '/edit'} }]">
 				<i class="fa fa-edit"></i></span>
-				<span class="btn btn-danger"
-					  [routerLink]="['/', { outlets: { popup: 'user-reservation/'+ reservation.id + '/delete'} }]">
+			<span class="btn btn-danger"
+				  [routerLink]="['/', { outlets: { popup: 'user-reservation/'+ reservation.id + '/delete'} }]">
 				<i class="fa fa-trash"></i></span>
-			</td>
-			<td *ngIf="!reservation.canEdit">
-			</td>
-		</tr>
+		</td>
+		<td *ngIf="!reservation.canEdit">
+		</td>
+	</tr>
 	</tbody>
 
 </table>

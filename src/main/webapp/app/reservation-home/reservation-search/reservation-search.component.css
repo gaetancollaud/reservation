@@ -1,0 +1,18 @@
+:host {
+	display: flex;
+	flex-direction: column;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+}
+
+.shortcut-buttons {
+	display: flex;
+	flex-direction: column;
+}
+
+.shortcut-buttons .btn {
+	margin: 5px;
+}

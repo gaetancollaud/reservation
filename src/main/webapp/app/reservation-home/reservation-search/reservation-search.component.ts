@@ -5,27 +5,11 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {SubscriptionHelper} from '../../utils/subscription-helper';
 import 'rxjs/add/operator/distinctUntilChanged';
 import * as moment from 'moment';
-import StartOf = moment.unitOfTime.StartOf;
-
-class ReservationSearchForm {
-
-	public from: string;
-	public to: string;
-
-	public constructor(criteria: ReservationCriteria) {
-		this.from = criteria.from.toISOString().substring(0, 10);
-		this.to = criteria.to.toISOString().substring(0, 10);
-	}
-
-	public equals(other: ReservationSearchForm) {
-		return this.from === other.from && this.to === other.to;
-	}
-}
 
 @Component({
 	selector: 'jhi-reservation-search',
 	templateUrl: './reservation-search.component.html',
-	styles: []
+	styleUrls: ['./reservation-search.component.css']
 })
 export class ReservationSearchComponent extends SubscriptionHelper implements OnInit, OnDestroy {
 
@@ -43,14 +27,22 @@ export class ReservationSearchComponent extends SubscriptionHelper implements On
 		this.addSubscription(this.datastore.search
 			.distinctUntilChanged()
 			.subscribe((search: ReservationCriteria) => {
-				const v = new ReservationSearchForm(search);
-				if (!v.equals(this.formGroup.value)) {
-					this.formGroup.setValue(v);
-				}
+				// const v = new ReservationSearchForm(search);
+				// if (!v.equals(this.formGroup.value)) {
+				this.formGroup.setValue(search);
+				// }
 			}));
 
 		this.addSubscription(this.formGroup.valueChanges.subscribe((value: ReservationCriteria) => {
-			this.datastore.search.next(new ReservationCriteria(new Date(value.from), new Date(value.to)));
+			const newStart = moment(value.from).startOf('day');
+			const newTo = moment(value.to).endOf('day');
+			const old = this.datastore.search.getValue();
+			const oldStart = moment(old.from).startOf('day');
+			const oldTo = moment(old.to).endOf('day');
+
+			if (!newStart.isSame(oldStart) || !newTo.isSame(oldTo)) {
+				this.datastore.search.next(new ReservationCriteria(newStart.toDate(), newTo.toDate()));
+			}
 		}));
 	}
 
@@ -58,8 +50,12 @@ export class ReservationSearchComponent extends SubscriptionHelper implements On
 		this.unsubscribeAll();
 	}
 
-	public selectDateUnit(unit: StartOf): void {
+	public selectDateUnit(unit: moment.unitOfTime.StartOf): void {
 		this.datastore.search.next(new ReservationCriteria(moment().startOf(unit).toDate(), moment().endOf(unit).toDate()));
+	}
+
+	public nextDays(days: number) {
+		this.datastore.search.next(new ReservationCriteria(moment().startOf('day').toDate(), moment().add(days, 'day').startOf('day').toDate()));
 	}
 
 }

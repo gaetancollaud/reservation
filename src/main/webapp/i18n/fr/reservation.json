@@ -19,7 +19,9 @@
             "timestampStart": "Timestamp Start",
             "timestampEnd": "Timestamp End",
             "resource": "Resource",
-            "user": "User"
+            "user": "User",
+			"start": "Début",
+			"duration": "Durée"
         }
     }
 }

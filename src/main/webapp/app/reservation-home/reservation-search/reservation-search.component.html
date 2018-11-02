@@ -1,14 +1,32 @@
 <form class="form" [formGroup]="formGroup">
-	<div class="form-group">
-		<label>De</label>
-		<input formControlName="from" type="date" class="form-control"/>
-	</div>
-	<div class="form-group">
-		<label>à</label>
-		<input formControlName="to" type="date" class="form-control"/>
-	</div>
+
+	<mat-form-field>
+		<input matInput [matDatepicker]="pickerFrom" placeholder="De" formControlName="from">
+		<mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+		<mat-datepicker #pickerFrom></mat-datepicker>
+	</mat-form-field>
+
+	<mat-form-field>
+		<input matInput [matDatepicker]="pickerTo" placeholder="A" formControlName="to">
+		<mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+		<mat-datepicker #pickerTo></mat-datepicker>
+	</mat-form-field>
+
+	<!--<div class="form-group">-->
+	<!--<label>De</label>-->
+	<!--<input formControlName="from" type="date" class="form-control"/>-->
+	<!--</div>-->
+	<!--<div class="form-group">-->
+	<!--<label>à</label>-->
+	<!--<input formControlName="to" type="date" class="form-control"/>-->
+	<!--</div>-->
 </form>
 
-<div class="btn btn-primary" (click)="selectDateUnit('month')">Ce mois</div>
-<div class="btn btn-primary" (click)="selectDateUnit('week')">Cette semaine</div>
-<div class="btn btn-primary" (click)="selectDateUnit('day')">Aujourd'hui</div>
+<div class="shortcut-buttons">
+	<div class="btn btn-primary" (click)="selectDateUnit('month')">Ce mois</div>
+	<div class="btn btn-primary" (click)="selectDateUnit('week')">Cette semaine</div>
+	<div class="btn btn-primary" (click)="selectDateUnit('day')">Aujourd'hui</div>
+	<div class="btn btn-primary" (click)="nextDays(7)">Les 7 prochains jours</div>
+	<div class="btn btn-primary" (click)="nextDays(30)">Les 30 prochains jours</div>
+
+</div>

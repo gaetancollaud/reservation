@@ -17,11 +17,17 @@ import {
 	UserReservationPopupComponent
 } from './reservation-operation/user-reservation-dialog.component';
 import {UserReservationPopupService} from './user-reservation-popup.service';
+import {MatDatepickerModule, MatFormFieldModule, MatInputModule, MatNativeDateModule} from '@angular/material';
 
 @NgModule({
 	imports: [
 		ReservationSharedModule,
-		RouterModule.forChild(RESERVATION_HOME_ROUTES)
+		RouterModule.forChild(RESERVATION_HOME_ROUTES),
+
+		MatFormFieldModule,
+		MatDatepickerModule,
+		MatNativeDateModule,
+		MatInputModule
 	],
 	declarations: [
 		ReservationHomeComponent,

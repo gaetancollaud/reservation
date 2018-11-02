@@ -27,10 +27,12 @@ import {
 	ProfileService
 } from './layouts';
 import {ReservationHomeModule} from './reservation-home';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
 	imports: [
 		BrowserModule,
+		BrowserAnimationsModule,
 		ReservationAppRoutingModule,
 		Ng2Webstorage.forRoot({prefix: 'jhi', separator: '-'}),
 		ReservationSharedModule,

@@ -2,8 +2,20 @@
 	float: right;
 }
 
+.table-actions {
+	text-align: right;
+}
+
 .group-name {
 	text-align: center;
 	color: white;
 	background-color: #3E8ACC;
+}
+
+tbody.today .group-name {
+	background-color: rgba(255, 159, 0, 1);
+}
+
+tbody.today td {
+	background-color: rgba(255, 159, 0, 0.3);
 }

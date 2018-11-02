@@ -13,7 +13,6 @@ import {SubscriptionHelper} from '../utils/subscription-helper';
 import {EntityResponseType} from '../entities/resource/resource.service';
 import {ResourceType, ResourceTypeService} from '../entities/resource-type';
 
-
 export class ReservationGrouped {
 	constructor(private _date: Date, private _key: string, private _reservations: ReservationExtended[]) {
 
@@ -93,8 +92,8 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
 		this._reservationsGrouped = new BehaviorSubject<ReservationGrouped[]>(null);
 		this._searchResult = new Subject();
 		this._search = new BehaviorSubject<ReservationCriteria>(new ReservationCriteria(
-			moment().startOf('week').toDate(),
-			moment().add(1, 'month').endOf('week').toDate()));
+			moment().toDate(),
+			moment().add(1, 'month').toDate()));
 	}
 
 	public start(): void {
