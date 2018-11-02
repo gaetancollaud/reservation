@@ -6,16 +6,17 @@
 <table class="table">
 	<tr>
 		<th>Début</th>
-		<td>Durée</td>
-		<td>Resource</td>
-		<td>Qui</td>
-		<td></td>
+		<th>Durée</th>
+		<th>Resource</th>
+		<th>Qui</th>
+		<th></th>
 	</tr>
 	<tbody *ngFor="let group of datastore.reservationsGrouped|async"
-		   [class.today]="group.key===todaysKey">
+		   [class.today]="group.key===todaysKey"
+		   [class.past]="group.past">
 	<tr>
 		<th class="group-name" colspan="5">
-			{{group.key}}
+			{{group.date|date}}
 			<span *ngIf="group.key===todaysKey">(Aujourd'hui)</span>
 		</th>
 	</tr>

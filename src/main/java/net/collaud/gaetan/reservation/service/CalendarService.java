@@ -52,6 +52,9 @@ public class CalendarService {
 						Recur recur = ((RRule) rrule).getRecur();
 						Date nextDateStart = recur.getNextDate(dtstart, dateToTest);
 						Date nextDateEnd = recur.getNextDate(dtend, dateToTest);
+						if (nextDateStart == null || nextDateEnd == null) {
+							return false;
+						}
 						Interval eventInterval = new Interval(nextDateStart.toInstant(), nextDateEnd.toInstant());
 						return eventInterval.canContains(requestedInterval);
 					} else {

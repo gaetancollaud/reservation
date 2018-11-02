@@ -179,6 +179,8 @@ export class UserReservationDialogComponent extends SubscriptionHelper implement
 			this.reservationErrorMessage = 'Réservation en conflict avec une autre';
 		} else if (res.status === 406) {
 			this.reservationErrorMessage = 'Réservation impossible à cette date. Est-ce que le Fablab est bien ouvert à ce moment là ?';
+		} else {
+			this.reservationErrorMessage = res.message;
 		}
 	}
 

@@ -12,6 +12,10 @@
 	background-color: #3E8ACC;
 }
 
+tbody.past .group-name {
+	background-color: #555555;
+}
+
 tbody.today .group-name {
 	background-color: rgba(255, 159, 0, 1);
 }

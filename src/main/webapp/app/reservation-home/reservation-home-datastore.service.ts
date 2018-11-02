@@ -18,6 +18,10 @@ export class ReservationGrouped {
 
 	}
 
+	get past(): boolean {
+		return new Date().getTime() > this._date.getTime();
+	}
+
 	get date(): Date {
 		return this._date;
 	}
