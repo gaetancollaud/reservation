@@ -53,7 +53,7 @@ export enum Operation {
 export class ReservationOperation {
 
 	public static add(): ReservationOperation {
-		return new ReservationOperation(new ReservationExtended(), Operation.ADD);
+		return new ReservationOperation(new ReservationExtended(null, new Date()), Operation.ADD);
 	}
 
 	public static edit(r: ReservationExtended): ReservationOperation {

@@ -11,37 +11,68 @@
 		<jhi-alert-error></jhi-alert-error>
 
 		<div class="form-group">
-			<label class="form-control-label" jhiTranslate="reservationApp.reservation.resource" for="field_resource">Resource</label>
-			<select class="form-control" id="field_resource" formControlName="resourceId">
-				<option *ngFor="let resourceOption of resources" [ngValue]="resourceOption.id">
-					{{resourceOption.name}}
-				</option>
-			</select>
+			<mat-form-field>
+				<mat-select placeholder="Resource" formControlName="resourceId">
+					<mat-option *ngFor="let resourceOption of resources" [value]="resourceOption.id">
+						{{resourceOption.name}}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+
+			<!--<label class="form-control-label" jhiTranslate="reservationApp.reservation.resource" for="field_resource">Resource</label>-->
+			<!--<select class="form-control" id="field_resource" formControlName="resourceId">-->
+				<!--<option *ngFor="let resourceOption of resources" [ngValue]="resourceOption.id">-->
+					<!--{{resourceOption.name}}-->
+				<!--</option>-->
+			<!--</select>-->
 		</div>
 
 		<div class="form-group">
-			<label class="form-control-label" jhiTranslate="reservationApp.reservation.start"
-				   for="field_timestampStartDate">Timestamp Start</label>
-			<div class="d-flex">
-				<input id="field_timestampStartDate" type="date" class="form-control"
-					   formControlName="dateStartDate"/>
-				<select id="field_timestampStartTime" class="form-control" formControlName="dateStartTime">
-					<option *ngFor="let startTime of startTimes" [ngValue]="startTime.value">
-						{{startTime.name}}
-					</option>
-				</select>
-			</div>
+			<!--<label class="form-control-label" jhiTranslate="reservationApp.reservation.start"-->
+				   <!--for="field_timestampStartDate">Timestamp Start</label>-->
+				<mat-form-field>
+					<input matInput [matDatepicker]="pickerStart" placeholder="Date" formControlName="dateStartDate">
+					<mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+					<mat-datepicker #pickerStart></mat-datepicker>
+				</mat-form-field>
+
+				<mat-form-field>
+					<mat-select placeholder="Heure" formControlName="dateStartTime">
+						<mat-option *ngFor="let startTime of startTimes" [value]="startTime.value">
+							{{ startTime.name }}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+
+
+				<!--<input id="field_timestampStartDate" type="date" class="form-control"-->
+					   <!--formControlName="dateStartDate"/>-->
+				<!--<select id="field_timestampStartTime" class="form-control" formControlName="dateStartTime">-->
+					<!--<option *ngFor="let startTime of startTimes" [ngValue]="startTime.value">-->
+						<!--{{startTime.name}}-->
+					<!--</option>-->
+				<!--</select>-->
 		</div>
 		<div class="form-group">
-			<label class="form-control-label" jhiTranslate="reservationApp.reservation.duration"
-				   for="field_duration">Duration</label>
-			<div class="d-flex">
-				<select id="field_duration" class="form-control" formControlName="durationSec">
-					<option *ngFor="let duration of durations" [ngValue]="duration.sec">
+
+
+			<mat-form-field>
+				<mat-select placeholder="Duration" formControlName="durationSec">
+					<mat-option *ngFor="let duration of durations" [value]="duration.sec">
 						{{duration.name}}
-					</option>
-				</select>
-			</div>
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+
+			<!--<label class="form-control-label" jhiTranslate="reservationApp.reservation.duration"-->
+				   <!--for="field_duration">Duration</label>-->
+			<!--<div class="d-flex">-->
+				<!--<select id="field_duration" class="form-control" formControlName="durationSec">-->
+					<!--<option *ngFor="let duration of durations" [ngValue]="duration.sec">-->
+						<!--{{duration.name}}-->
+					<!--</option>-->
+				<!--</select>-->
+			<!--</div>-->
 		</div>
 		<div class="form-group" *ngIf="reservation.resourceId">
 			<label class="form-control-label" jhiTranslate="reservationApp.reservation.user"

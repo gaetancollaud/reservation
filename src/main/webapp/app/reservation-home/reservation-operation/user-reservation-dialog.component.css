@@ -1,0 +1,7 @@
+.form-group {
+	display: flex;
+}
+
+mat-form-field {
+	flex: 1;
+}

@@ -19,14 +19,14 @@ import 'rxjs/add/operator/delay';
 export class ReservationForm {
 
 	public static fromReservation(r: ReservationExtended, datePipe: DatePipe): ReservationForm {
-		const dateStartDate = datePipe.transform(r.timestampStart, 'yyyy-MM-dd');
+		const dateStartDate = new Date(r.timestampStart);
 		const dateStartTime = 1830;
 		return new ReservationForm(r.id || 0, r.resourceId || 0, dateStartDate, dateStartTime, 60 * 60);
 	}
 
 	constructor(public id: number,
 				public resourceId: number,
-				public dateStartDate: string,
+				public dateStartDate: Date,
 				public dateStartTime: number,
 				public durationSec: number) {
 	}
@@ -52,7 +52,8 @@ export class StartTime {
 
 @Component({
 	selector: 'jhi-user-reservation-dialog',
-	templateUrl: './user-reservation-dialog.component.html'
+	templateUrl: './user-reservation-dialog.component.html',
+	styleUrls: ['./user-reservation-dialog.component.css']
 })
 export class UserReservationDialogComponent extends SubscriptionHelper implements OnInit, OnDestroy {
 
@@ -101,7 +102,7 @@ export class UserReservationDialogComponent extends SubscriptionHelper implement
 		this.reservationForm = this.fb.group({
 			id: [''],
 			resourceId: ['', Validators.required],
-			dateStartDate: ['', Validators.required],
+			dateStartDate: [new Date(), Validators.required],
 			dateStartTime: [1800, Validators.required],
 			durationSec: ['', Validators.required],
 		});

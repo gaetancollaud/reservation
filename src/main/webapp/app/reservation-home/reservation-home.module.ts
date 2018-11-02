@@ -17,7 +17,13 @@ import {
 	UserReservationPopupComponent
 } from './reservation-operation/user-reservation-dialog.component';
 import {UserReservationPopupService} from './user-reservation-popup.service';
-import {MatDatepickerModule, MatFormFieldModule, MatInputModule, MatNativeDateModule} from '@angular/material';
+import {
+	MatDatepickerModule,
+	MatFormFieldModule,
+	MatInputModule,
+	MatNativeDateModule,
+	MatSelectModule
+} from '@angular/material';
 
 @NgModule({
 	imports: [
@@ -26,6 +32,7 @@ import {MatDatepickerModule, MatFormFieldModule, MatInputModule, MatNativeDateMo
 
 		MatFormFieldModule,
 		MatDatepickerModule,
+		MatSelectModule,
 		MatNativeDateModule,
 		MatInputModule
 	],
