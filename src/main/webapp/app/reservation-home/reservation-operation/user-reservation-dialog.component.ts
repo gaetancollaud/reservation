@@ -67,6 +67,8 @@ export class UserReservationDialogComponent extends SubscriptionHelper implement
 	public dateStartTime: string;
 	public resourceType: ResourceType;
 
+	public reservationErrorMessage: string;
+
 	public allDurations: DurationItem[] = [
 		new DurationItem(15 * 60, '15 minutes'),
 		new DurationItem(30 * 60, '30 minutes'),
@@ -161,17 +163,23 @@ export class UserReservationDialogComponent extends SubscriptionHelper implement
 	private subscribeToSaveResponse(result: Observable<Reservation>) {
 		result.subscribe(
 			(res: Reservation) => this.onSaveSuccess(res),
-			(res: HttpErrorResponse) => this.onSaveError());
+			(res: HttpErrorResponse) => this.onSaveError(res));
 	}
 
 	private onSaveSuccess(result: Reservation) {
 		this.eventManager.broadcast({name: 'reservationListModification', content: 'OK'});
 		this.isSaving = false;
 		this.activeModal.dismiss(result);
+		this.reservationErrorMessage = null;
 	}
 
-	private onSaveError() {
+	private onSaveError(res: HttpErrorResponse) {
 		this.isSaving = false;
+		if (res.status === 409) {
+			this.reservationErrorMessage = 'Réservation en conflict avec une autre';
+		} else if (res.status === 406) {
+			this.reservationErrorMessage = 'Réservation impossible à cette date. Est-ce que le Fablab est bien ouvert à ce moment là ?';
+		}
 	}
 
 	private onError(error: any) {

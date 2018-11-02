@@ -4,6 +4,7 @@ import net.collaud.gaetan.reservation.domain.Interval;
 import net.collaud.gaetan.reservation.domain.Reservation;
 import net.collaud.gaetan.reservation.domain.Resource;
 import net.collaud.gaetan.reservation.domain.User;
+import net.collaud.gaetan.reservation.exceptions.ReservationConflictException;
 import net.collaud.gaetan.reservation.exceptions.ResourceLimitationException;
 import net.collaud.gaetan.reservation.repository.ReservationRepository;
 import net.collaud.gaetan.reservation.repository.ResourceRepository;
@@ -65,7 +66,7 @@ public class ReservationService {
 			.findFirst();
 
 		inConflict.ifPresent(conflict -> {
-			throw new RuntimeException("Conflict found with reservation " + conflict.getId());
+			throw new ReservationConflictException("Conflict found with reservation " + conflict.getId());
 		});
 	}
 
