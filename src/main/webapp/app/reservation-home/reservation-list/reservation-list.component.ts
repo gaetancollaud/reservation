@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ReservationHomeDatastoreService} from '../reservation-home-datastore.service';
-import moment = require('moment');
+import * as moment from 'moment';
 
 @Component({
 	selector: 'jhi-reservation-list',

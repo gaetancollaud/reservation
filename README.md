@@ -5,4 +5,5 @@ This application was generated using JHipster 4.14.2, you can find documentation
 
 ```
 ./mvnw package -Pprod -DskipTests dockerfile:build
+docker push gaetancollaud/reservation
 ```

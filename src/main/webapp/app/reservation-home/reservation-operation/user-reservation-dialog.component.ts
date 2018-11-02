@@ -59,7 +59,7 @@ export class UserReservationDialogComponent extends SubscriptionHelper implement
 
 	public isSaving: boolean;
 
-	public reservation: Reservation;
+	public reservation: ReservationExtended;
 
 	public resources: Resource[];
 	public duration: number;
