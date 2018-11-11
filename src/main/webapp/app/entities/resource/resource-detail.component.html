@@ -1,0 +1,40 @@
+
+<div *ngIf="resource">
+    <h2><span jhiTranslate="reservationApp.resource.detail.title">Resource</span> {{resource.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="reservationApp.resource.name">Name</span></dt>
+        <dd>
+            <span>{{resource.name}}</span>
+        </dd>
+        <dt><span jhiTranslate="reservationApp.resource.calendarLink">Calendar Link</span></dt>
+        <dd>
+            <span>{{resource.calendarLink}}</span>
+        </dd>
+        <dt><span jhiTranslate="reservationApp.resource.calendarSearchRegex">Calendar Search Regex</span></dt>
+        <dd>
+            <span>{{resource.calendarSearchRegex}}</span>
+        </dd>
+        <dt><span jhiTranslate="reservationApp.resource.type">Type</span></dt>
+        <dd>
+            <div *ngIf="resource.typeId">
+                <a [routerLink]="['/resource-type', resource.typeId]">{{resource.typeId}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'resource/'+ resource.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

@@ -1,0 +1,31 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "type",
+            "otherEntityName": "resourceType",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "calendarLink",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "calendarSearchRegex",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20180419185930",
+    "entityTableName": "resource",
+    "dto": "mapstruct",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false
+}
