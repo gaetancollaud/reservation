@@ -1,6 +1,5 @@
 package net.collaud.gaetan.reservation.service.dto;
 
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -69,7 +68,7 @@ public class ResourceTypeDTO implements Serializable {
         }
 
         ResourceTypeDTO resourceTypeDTO = (ResourceTypeDTO) o;
-        if(resourceTypeDTO.getId() == null || getId() == null) {
+        if (resourceTypeDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), resourceTypeDTO.getId());

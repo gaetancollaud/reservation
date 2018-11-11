@@ -1,5 +1,6 @@
 package net.collaud.gaetan.reservation.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -30,9 +31,11 @@ public class Reservation implements Serializable {
     private ZonedDateTime timestampEnd;
 
     @ManyToOne
+    @JsonIgnoreProperties("")
     private Resource resource;
 
     @ManyToOne
+    @JsonIgnoreProperties("")
     private User user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

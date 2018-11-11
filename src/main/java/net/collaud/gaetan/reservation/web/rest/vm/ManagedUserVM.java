@@ -1,7 +1,6 @@
 package net.collaud.gaetan.reservation.web.rest.vm;
 
 import net.collaud.gaetan.reservation.service.dto.UserDTO;
-import javax.validation.constraints.Size;
 
 /**
  * View Model extending the UserDTO, which is meant to be used in the user management UI.

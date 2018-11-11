@@ -1,7 +1,8 @@
 {
     "global": {
         "title": "Reservation",
-        "browsehappy": "Vous utilisez un <strong>ancien</strong> navigateur. Veuillez <a href=\"http://browsehappy.com/?locale=fr\">mettre à jour votre navigateur</a> pour une meilleure expérience.",
+        "browsehappy":
+            "Vous utilisez un <strong>ancien</strong> navigateur. Veuillez <a href=\"http://browsehappy.com/?locale=fr\">mettre à jour votre navigateur</a> pour une meilleure expérience.",
         "menu": {
             "home": "Accueil",
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
@@ -39,6 +40,8 @@
         "form": {
             "username": "Nom d'utilisateur",
             "username.placeholder": "Votre nom d'utilisateur",
+            "currentpassword": "Current password",
+            "currentpassword.placeholder": "Current password",
             "newpassword": "Nouveau mot de passe",
             "newpassword.placeholder": "Nouveau mot de passe",
             "confirmpassword": "Confirmation du nouveau mot de passe",
@@ -51,7 +54,8 @@
                 "authenticated": {
                     "prefix": "Si vous voulez vous ",
                     "link": "connecter",
-                    "suffix": ", vous pouvez utiliser les comptes par défaut : <br/> - Administrateur (nom d'utilisateur=\"admin\" et mot de passe =\"admin\") <br/> - Utilisateur (nom d'utilisateur=\"user\" et mot de passe =\"user\")."
+                    "suffix":
+                        ", vous pouvez utiliser les comptes par défaut : <br/> - Administrateur (nom d'utilisateur=\"admin\" et mot de passe =\"admin\") <br/> - Utilisateur (nom d'utilisateur=\"user\" et mot de passe =\"user\")."
                 },
                 "register": {
                     "noaccount": "Vous n'avez pas encore de compte ?",
@@ -85,7 +89,7 @@
             "id": "ID"
         },
         "ribbon": {
-            "dev":"Développement"
+            "dev": "Développement"
         },
         "item-count": "Affichage {{first}} - {{second}} de {{total}} items."
     },
@@ -129,7 +133,8 @@
         "Size": "Le champ {{fieldName}} ne respecte pas les critères minimum et maximum !",
         "userexists": "Login déjà utilisé !",
         "emailexists": "Email déjà utilisé !",
-        "idexists": "Une nouvelle entité {{entityName}} ne peut pas avoir d'ID !"
+        "idexists": "Une nouvelle entité {{entityName}} ne peut pas avoir d'ID !",
+        "idnull": "Invalid ID"
     },
     "footer": "Ceci est votre pied de page"
 }

@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { Reservation } from './reservation.model';
-import { ReservationPopupService } from './reservation-popup.service';
+import { IReservation } from 'app/shared/model/reservation.model';
 import { ReservationService } from './reservation.service';
 
 @Component({
@@ -13,22 +12,20 @@ import { ReservationService } from './reservation.service';
     templateUrl: './reservation-delete-dialog.component.html'
 })
 export class ReservationDeleteDialogComponent {
-
-    reservation: Reservation;
+    reservation: IReservation;
 
     constructor(
         private reservationService: ReservationService,
         public activeModal: NgbActiveModal,
         private eventManager: JhiEventManager
-    ) {
-    }
+    ) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.reservationService.delete(id).subscribe((response) => {
+        this.reservationService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'reservationListModification',
                 content: 'Deleted an reservation'
@@ -43,22 +40,33 @@ export class ReservationDeleteDialogComponent {
     template: ''
 })
 export class ReservationDeletePopupComponent implements OnInit, OnDestroy {
+    private ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private reservationPopupService: ReservationPopupService
-    ) {}
+    constructor(private activatedRoute: ActivatedRoute, private router: Router, private modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.reservationPopupService
-                .open(ReservationDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ reservation }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(ReservationDeleteDialogComponent as Component, {
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                this.ngbModalRef.componentInstance.reservation = reservation;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

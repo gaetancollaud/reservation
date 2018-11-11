@@ -22,11 +22,11 @@
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="timestamp_start" type="timestamp">
+            <column name="timestamp_start" type="datetime">
                 <constraints nullable="true" />
             </column>
 
-            <column name="timestamp_end" type="timestamp">
+            <column name="timestamp_end" type="datetime">
                 <constraints nullable="true" />
             </column>
 
@@ -34,7 +34,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="user_id" type="bigint">
+            <column name="user_id" type="varchar(100)">
                 <constraints nullable="true" />
             </column>
 

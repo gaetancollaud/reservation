@@ -1,7 +1,6 @@
-
 {
     "reservationApp": {
-        "resource" : {
+        "resource": {
             "home": {
                 "title": "Resources",
                 "createLabel": "Créer un nouveau Resource",

@@ -1,51 +1,30 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { ReservationSharedModule } from '../../shared';
-import { ReservationAdminModule } from '../../admin/admin.module';
+import { ReservationSharedModule } from 'app/shared';
+import { ReservationAdminModule } from 'app/admin/admin.module';
 import {
-    ReservationService,
-    ReservationPopupService,
     ReservationComponent,
     ReservationDetailComponent,
-    ReservationDialogComponent,
-    ReservationPopupComponent,
+    ReservationUpdateComponent,
     ReservationDeletePopupComponent,
     ReservationDeleteDialogComponent,
     reservationRoute,
-    reservationPopupRoute,
+    reservationPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...reservationRoute,
-    ...reservationPopupRoute,
-];
+const ENTITY_STATES = [...reservationRoute, ...reservationPopupRoute];
 
 @NgModule({
-    imports: [
-        ReservationSharedModule,
-        ReservationAdminModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [ReservationSharedModule, ReservationAdminModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         ReservationComponent,
         ReservationDetailComponent,
-        ReservationDialogComponent,
+        ReservationUpdateComponent,
         ReservationDeleteDialogComponent,
-        ReservationPopupComponent,
-        ReservationDeletePopupComponent,
+        ReservationDeletePopupComponent
     ],
-    entryComponents: [
-        ReservationComponent,
-        ReservationDialogComponent,
-        ReservationPopupComponent,
-        ReservationDeleteDialogComponent,
-        ReservationDeletePopupComponent,
-    ],
-    providers: [
-        ReservationService,
-        ReservationPopupService,
-    ],
+    entryComponents: [ReservationComponent, ReservationUpdateComponent, ReservationDeleteDialogComponent, ReservationDeletePopupComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ReservationReservationModule {}

@@ -29,6 +29,7 @@ import java.time.ZoneOffset;
 import java.time.ZoneId;
 import java.util.List;
 
+
 import static net.collaud.gaetan.reservation.web.rest.TestUtil.sameInstant;
 import static net.collaud.gaetan.reservation.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -156,7 +157,7 @@ public class ReservationResourceIntTest {
             .andExpect(jsonPath("$.[*].timestampStart").value(hasItem(sameInstant(DEFAULT_TIMESTAMP_START))))
             .andExpect(jsonPath("$.[*].timestampEnd").value(hasItem(sameInstant(DEFAULT_TIMESTAMP_END))));
     }
-
+    
     @Test
     @Transactional
     public void getReservation() throws Exception {
@@ -185,10 +186,11 @@ public class ReservationResourceIntTest {
     public void updateReservation() throws Exception {
         // Initialize the database
         reservationRepository.saveAndFlush(reservation);
+
         int databaseSizeBeforeUpdate = reservationRepository.findAll().size();
 
         // Update the reservation
-        Reservation updatedReservation = reservationRepository.findOne(reservation.getId());
+        Reservation updatedReservation = reservationRepository.findById(reservation.getId()).get();
         // Disconnect from session so that the updates on updatedReservation are not directly saved in db
         em.detach(updatedReservation);
         updatedReservation
@@ -217,15 +219,15 @@ public class ReservationResourceIntTest {
         // Create the Reservation
         ReservationDTO reservationDTO = reservationMapper.toDto(reservation);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restReservationMockMvc.perform(put("/api/reservations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(reservationDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Reservation in the database
         List<Reservation> reservationList = reservationRepository.findAll();
-        assertThat(reservationList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(reservationList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -233,6 +235,7 @@ public class ReservationResourceIntTest {
     public void deleteReservation() throws Exception {
         // Initialize the database
         reservationRepository.saveAndFlush(reservation);
+
         int databaseSizeBeforeDelete = reservationRepository.findAll().size();
 
         // Get the reservation

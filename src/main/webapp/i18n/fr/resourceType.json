@@ -1,7 +1,6 @@
-
 {
     "reservationApp": {
-        "resourceType" : {
+        "resourceType": {
             "home": {
                 "title": "ResourceTypes",
                 "createLabel": "Créer un nouveau Resource Type",

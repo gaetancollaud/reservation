@@ -2,7 +2,6 @@ package net.collaud.gaetan.reservation.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import net.collaud.gaetan.reservation.domain.ResourceType;
-
 import net.collaud.gaetan.reservation.repository.ResourceTypeRepository;
 import net.collaud.gaetan.reservation.web.rest.errors.BadRequestAlertException;
 import net.collaud.gaetan.reservation.web.rest.util.HeaderUtil;
@@ -54,6 +53,7 @@ public class ResourceTypeResource {
         if (resourceTypeDTO.getId() != null) {
             throw new BadRequestAlertException("A new resourceType cannot already have an ID", ENTITY_NAME, "idexists");
         }
+
         ResourceType resourceType = resourceTypeMapper.toEntity(resourceTypeDTO);
         resourceType = resourceTypeRepository.save(resourceType);
         ResourceTypeDTO result = resourceTypeMapper.toDto(resourceType);
@@ -76,8 +76,9 @@ public class ResourceTypeResource {
     public ResponseEntity<ResourceTypeDTO> updateResourceType(@RequestBody ResourceTypeDTO resourceTypeDTO) throws URISyntaxException {
         log.debug("REST request to update ResourceType : {}", resourceTypeDTO);
         if (resourceTypeDTO.getId() == null) {
-            return createResourceType(resourceTypeDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
+
         ResourceType resourceType = resourceTypeMapper.toEntity(resourceTypeDTO);
         resourceType = resourceTypeRepository.save(resourceType);
         ResourceTypeDTO result = resourceTypeMapper.toDto(resourceType);
@@ -97,7 +98,7 @@ public class ResourceTypeResource {
         log.debug("REST request to get all ResourceTypes");
         List<ResourceType> resourceTypes = resourceTypeRepository.findAll();
         return resourceTypeMapper.toDto(resourceTypes);
-        }
+    }
 
     /**
      * GET  /resource-types/:id : get the "id" resourceType.
@@ -109,9 +110,9 @@ public class ResourceTypeResource {
     @Timed
     public ResponseEntity<ResourceTypeDTO> getResourceType(@PathVariable Long id) {
         log.debug("REST request to get ResourceType : {}", id);
-        ResourceType resourceType = resourceTypeRepository.findOne(id);
-        ResourceTypeDTO resourceTypeDTO = resourceTypeMapper.toDto(resourceType);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(resourceTypeDTO));
+        Optional<ResourceTypeDTO> resourceTypeDTO = resourceTypeRepository.findById(id)
+            .map(resourceTypeMapper::toDto);
+        return ResponseUtil.wrapOrNotFound(resourceTypeDTO);
     }
 
     /**
@@ -124,7 +125,8 @@ public class ResourceTypeResource {
     @Timed
     public ResponseEntity<Void> deleteResourceType(@PathVariable Long id) {
         log.debug("REST request to delete ResourceType : {}", id);
-        resourceTypeRepository.delete(id);
+
+        resourceTypeRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

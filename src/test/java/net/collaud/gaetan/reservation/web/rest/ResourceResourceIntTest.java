@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+
 import static net.collaud.gaetan.reservation.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -157,7 +158,7 @@ public class ResourceResourceIntTest {
             .andExpect(jsonPath("$.[*].calendarLink").value(hasItem(DEFAULT_CALENDAR_LINK.toString())))
             .andExpect(jsonPath("$.[*].calendarSearchRegex").value(hasItem(DEFAULT_CALENDAR_SEARCH_REGEX.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getResource() throws Exception {
@@ -187,10 +188,11 @@ public class ResourceResourceIntTest {
     public void updateResource() throws Exception {
         // Initialize the database
         resourceRepository.saveAndFlush(resource);
+
         int databaseSizeBeforeUpdate = resourceRepository.findAll().size();
 
         // Update the resource
-        Resource updatedResource = resourceRepository.findOne(resource.getId());
+        Resource updatedResource = resourceRepository.findById(resource.getId()).get();
         // Disconnect from session so that the updates on updatedResource are not directly saved in db
         em.detach(updatedResource);
         updatedResource
@@ -221,15 +223,15 @@ public class ResourceResourceIntTest {
         // Create the Resource
         ResourceDTO resourceDTO = resourceMapper.toDto(resource);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restResourceMockMvc.perform(put("/api/resources")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(resourceDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Resource in the database
         List<Resource> resourceList = resourceRepository.findAll();
-        assertThat(resourceList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(resourceList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -237,6 +239,7 @@ public class ResourceResourceIntTest {
     public void deleteResource() throws Exception {
         // Initialize the database
         resourceRepository.saveAndFlush(resource);
+
         int databaseSizeBeforeDelete = resourceRepository.findAll().size();
 
         // Get the resource

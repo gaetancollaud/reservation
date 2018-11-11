@@ -2,7 +2,6 @@ package net.collaud.gaetan.reservation.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import net.collaud.gaetan.reservation.domain.Reservation;
-
 import net.collaud.gaetan.reservation.repository.ReservationRepository;
 import net.collaud.gaetan.reservation.web.rest.errors.BadRequestAlertException;
 import net.collaud.gaetan.reservation.web.rest.util.HeaderUtil;
@@ -54,6 +53,7 @@ public class ReservationResource {
         if (reservationDTO.getId() != null) {
             throw new BadRequestAlertException("A new reservation cannot already have an ID", ENTITY_NAME, "idexists");
         }
+
         Reservation reservation = reservationMapper.toEntity(reservationDTO);
         reservation = reservationRepository.save(reservation);
         ReservationDTO result = reservationMapper.toDto(reservation);
@@ -76,8 +76,9 @@ public class ReservationResource {
     public ResponseEntity<ReservationDTO> updateReservation(@RequestBody ReservationDTO reservationDTO) throws URISyntaxException {
         log.debug("REST request to update Reservation : {}", reservationDTO);
         if (reservationDTO.getId() == null) {
-            return createReservation(reservationDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
+
         Reservation reservation = reservationMapper.toEntity(reservationDTO);
         reservation = reservationRepository.save(reservation);
         ReservationDTO result = reservationMapper.toDto(reservation);
@@ -97,7 +98,7 @@ public class ReservationResource {
         log.debug("REST request to get all Reservations");
         List<Reservation> reservations = reservationRepository.findAll();
         return reservationMapper.toDto(reservations);
-        }
+    }
 
     /**
      * GET  /reservations/:id : get the "id" reservation.
@@ -109,9 +110,9 @@ public class ReservationResource {
     @Timed
     public ResponseEntity<ReservationDTO> getReservation(@PathVariable Long id) {
         log.debug("REST request to get Reservation : {}", id);
-        Reservation reservation = reservationRepository.findOne(id);
-        ReservationDTO reservationDTO = reservationMapper.toDto(reservation);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(reservationDTO));
+        Optional<ReservationDTO> reservationDTO = reservationRepository.findById(id)
+            .map(reservationMapper::toDto);
+        return ResponseUtil.wrapOrNotFound(reservationDTO);
     }
 
     /**
@@ -124,7 +125,8 @@ public class ReservationResource {
     @Timed
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         log.debug("REST request to delete Reservation : {}", id);
-        reservationRepository.delete(id);
+
+        reservationRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

@@ -1,15 +1,14 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async, inject, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { ReservationTestModule } from '../../../test.module';
-import { ReservationDeleteDialogComponent } from '../../../../../../main/webapp/app/entities/reservation/reservation-delete-dialog.component';
-import { ReservationService } from '../../../../../../main/webapp/app/entities/reservation/reservation.service';
+import { ReservationDeleteDialogComponent } from 'app/entities/reservation/reservation-delete-dialog.component';
+import { ReservationService } from 'app/entities/reservation/reservation.service';
 
 describe('Component Tests', () => {
-
     describe('Reservation Management Delete Component', () => {
         let comp: ReservationDeleteDialogComponent;
         let fixture: ComponentFixture<ReservationDeleteDialogComponent>;
@@ -17,19 +16,13 @@ describe('Component Tests', () => {
         let mockEventManager: any;
         let mockActiveModal: any;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [ReservationTestModule],
-                declarations: [ReservationDeleteDialogComponent],
-                providers: [
-                    ReservationService
-                ]
+                declarations: [ReservationDeleteDialogComponent]
             })
-            .overrideTemplate(ReservationDeleteDialogComponent, '')
-            .compileComponents();
-        }));
-
-        beforeEach(() => {
+                .overrideTemplate(ReservationDeleteDialogComponent, '')
+                .compileComponents();
             fixture = TestBed.createComponent(ReservationDeleteDialogComponent);
             comp = fixture.componentInstance;
             service = fixture.debugElement.injector.get(ReservationService);
@@ -38,24 +31,22 @@ describe('Component Tests', () => {
         });
 
         describe('confirmDelete', () => {
-            it('Should call delete service on confirmDelete',
-                inject([],
-                    fakeAsync(() => {
-                        // GIVEN
-                        spyOn(service, 'delete').and.returnValue(Observable.of({}));
+            it('Should call delete service on confirmDelete', inject(
+                [],
+                fakeAsync(() => {
+                    // GIVEN
+                    spyOn(service, 'delete').and.returnValue(of({}));
 
-                        // WHEN
-                        comp.confirmDelete(123);
-                        tick();
+                    // WHEN
+                    comp.confirmDelete(123);
+                    tick();
 
-                        // THEN
-                        expect(service.delete).toHaveBeenCalledWith(123);
-                        expect(mockActiveModal.dismissSpy).toHaveBeenCalled();
-                        expect(mockEventManager.broadcastSpy).toHaveBeenCalled();
-                    })
-                )
-            );
+                    // THEN
+                    expect(service.delete).toHaveBeenCalledWith(123);
+                    expect(mockActiveModal.dismissSpy).toHaveBeenCalled();
+                    expect(mockEventManager.broadcastSpy).toHaveBeenCalled();
+                })
+            ));
         });
     });
-
 });

@@ -1,10 +1,9 @@
 package net.collaud.gaetan.reservation.service;
 
-import net.collaud.gaetan.reservation.config.CacheConfiguration;
+import net.collaud.gaetan.reservation.config.Constants;
 import net.collaud.gaetan.reservation.domain.Authority;
 import net.collaud.gaetan.reservation.domain.User;
 import net.collaud.gaetan.reservation.repository.AuthorityRepository;
-import net.collaud.gaetan.reservation.config.Constants;
 import net.collaud.gaetan.reservation.repository.UserRepository;
 import net.collaud.gaetan.reservation.security.SecurityUtils;
 import net.collaud.gaetan.reservation.service.dto.UserDTO;
@@ -64,11 +63,10 @@ public class UserService {
             .ifPresent(user -> {
                 user.setFirstName(firstName);
                 user.setLastName(lastName);
-                user.setEmail(email);
+                user.setEmail(email.toLowerCase());
                 user.setLangKey(langKey);
                 user.setImageUrl(imageUrl);
-                cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
-                cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+                this.clearUserCaches(user);
                 log.debug("Changed Information for User: {}", user);
             });
     }
@@ -81,22 +79,26 @@ public class UserService {
      */
     public Optional<UserDTO> updateUser(UserDTO userDTO) {
         return Optional.of(userRepository
-            .findOne(userDTO.getId()))
+            .findById(userDTO.getId()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
             .map(user -> {
-                user.setLogin(userDTO.getLogin());
+                this.clearUserCaches(user);
+                user.setLogin(userDTO.getLogin().toLowerCase());
                 user.setFirstName(userDTO.getFirstName());
                 user.setLastName(userDTO.getLastName());
-                user.setEmail(userDTO.getEmail());
+                user.setEmail(userDTO.getEmail().toLowerCase());
                 user.setImageUrl(userDTO.getImageUrl());
                 user.setActivated(userDTO.isActivated());
                 user.setLangKey(userDTO.getLangKey());
                 Set<Authority> managedAuthorities = user.getAuthorities();
                 managedAuthorities.clear();
                 userDTO.getAuthorities().stream()
-                    .map(authorityRepository::findOne)
+                    .map(authorityRepository::findById)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
                     .forEach(managedAuthorities::add);
-                cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
-                cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+                this.clearUserCaches(user);
                 log.debug("Changed Information for User: {}", user);
                 return user;
             })
@@ -106,8 +108,7 @@ public class UserService {
     public void deleteUser(String login) {
         userRepository.findOneByLogin(login).ifPresent(user -> {
             userRepository.delete(user);
-            cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
-            cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+            this.clearUserCaches(user);
             log.debug("Deleted User: {}", user);
         });
     }
@@ -146,7 +147,9 @@ public class UserService {
      * @param authentication OAuth2 authentication
      * @return the user from the authentication
      */
+    @SuppressWarnings("unchecked")
     public UserDTO getUserFromAuthentication(OAuth2Authentication authentication) {
+        Object oauth2AuthenticationDetails = authentication.getDetails(); // should be an OAuth2AuthenticationDetails
         Map<String, Object> details = (Map<String, Object>) authentication.getUserAuthentication().getDetails();
         User user = getUser(details);
         Set<Authority> userAuthorities = extractAuthorities(authentication, details);
@@ -160,12 +163,25 @@ public class UserService {
 
         UsernamePasswordAuthenticationToken token = getToken(details, user, grantedAuthorities);
         authentication = new OAuth2Authentication(authentication.getOAuth2Request(), token);
+        authentication.setDetails(oauth2AuthenticationDetails); // must be present in a gateway for TokenRelayFilter to work
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return new UserDTO(syncUserWithIdP(details, user));
     }
 
     private User syncUserWithIdP(Map<String, Object> details, User user) {
+        // save authorities in to sync user roles/groups between IdP and JHipster's local database
+        Collection<String> dbAuthorities = getAuthorities();
+        Collection<String> userAuthorities =
+            user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toList());
+        for (String authority : userAuthorities) {
+            if (!dbAuthorities.contains(authority)) {
+                log.debug("Saving authority '{}' in local database", authority);
+                Authority authoritytoSave = new Authority();
+                authoritytoSave.setName(authority);
+                authorityRepository.save(authoritytoSave);
+            }
+        }
         // save account in to sync users between IdP and JHipster's local database
         Optional<User> existingUser = userRepository.findOneByLogin(user.getLogin());
         if (existingUser.isPresent()) {
@@ -174,21 +190,20 @@ public class UserService {
                 Instant dbModifiedDate = existingUser.get().getLastModifiedDate();
                 Instant idpModifiedDate = new Date(Long.valueOf((Integer) details.get("updated_at"))).toInstant();
                 if (idpModifiedDate.isAfter(dbModifiedDate)) {
-                    log.debug("Updating user '{}' in local database...", user.getLogin());
+                    log.debug("Updating user '{}' in local database", user.getLogin());
                     updateUser(user.getFirstName(), user.getLastName(), user.getEmail(),
                         user.getLangKey(), user.getImageUrl());
                 }
                 // no last updated info, blindly update
             } else {
-                log.debug("Updating user '{}' in local database...", user.getLogin());
+                log.debug("Updating user '{}' in local database", user.getLogin());
                 updateUser(user.getFirstName(), user.getLastName(), user.getEmail(),
                     user.getLangKey(), user.getImageUrl());
             }
         } else {
-            log.debug("Saving user '{}' in local database...", user.getLogin());
+            log.debug("Saving user '{}' in local database", user.getLogin());
             userRepository.save(user);
-            cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
-            cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+            this.clearUserCaches(user);
         }
         return user;
     }
@@ -205,6 +220,7 @@ public class UserService {
         return token;
     }
 
+    @SuppressWarnings("unchecked")
     private static Set<Authority> extractAuthorities(OAuth2Authentication authentication, Map<String, Object> details) {
         Set<Authority> userAuthorities;
         // get roles from details
@@ -224,7 +240,8 @@ public class UserService {
 
     private static User getUser(Map<String, Object> details) {
         User user = new User();
-        user.setLogin((String) details.get("preferred_username"));
+        user.setId((String) details.get("sub"));
+        user.setLogin(((String) details.get("preferred_username")).toLowerCase());
         if (details.get("given_name") != null) {
             user.setFirstName((String) details.get("given_name"));
         }
@@ -235,18 +252,24 @@ public class UserService {
             user.setActivated((Boolean) details.get("email_verified"));
         }
         if (details.get("email") != null) {
-            user.setEmail((String) details.get("email"));
+            user.setEmail(((String) details.get("email")).toLowerCase());
         }
         if (details.get("langKey") != null) {
             user.setLangKey((String) details.get("langKey"));
         } else if (details.get("locale") != null) {
             String locale = (String) details.get("locale");
-            String langKey = locale.substring(0, locale.indexOf("-"));
-            user.setLangKey(langKey);
+            if (locale.contains("-")) {
+              String langKey = locale.substring(0, locale.indexOf("-"));
+              user.setLangKey(langKey);
+            } else if (locale.contains("_")) {
+              String langKey = locale.substring(0, locale.indexOf("_"));
+              user.setLangKey(langKey);
+            }
         }
         if (details.get("picture") != null) {
             user.setImageUrl((String) details.get("picture"));
         }
+        user.setActivated(true);
         return user;
     }
 
@@ -265,4 +288,8 @@ public class UserService {
                     }).collect(Collectors.toSet());
     }
 
+    private void clearUserCaches(User user) {
+        Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
+        Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
+    }
 }

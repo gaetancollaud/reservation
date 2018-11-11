@@ -1,12 +1,11 @@
 package net.collaud.gaetan.reservation.web.rest;
 
 import net.collaud.gaetan.reservation.config.Constants;
-import com.codahale.metrics.annotation.Timed;
-import net.collaud.gaetan.reservation.repository.UserRepository;
 import net.collaud.gaetan.reservation.security.AuthoritiesConstants;
 import net.collaud.gaetan.reservation.service.UserService;
 import net.collaud.gaetan.reservation.service.dto.UserDTO;
 import net.collaud.gaetan.reservation.web.rest.util.PaginationUtil;
+import com.codahale.metrics.annotation.Timed;
 import io.github.jhipster.web.util.ResponseUtil;
 
 import org.slf4j.Logger;
@@ -16,7 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -51,13 +50,10 @@ public class UserResource {
 
     private final Logger log = LoggerFactory.getLogger(UserResource.class);
 
-    private final UserRepository userRepository;
-
     private final UserService userService;
 
-    public UserResource(UserRepository userRepository, UserService userService) {
+    public UserResource(UserService userService) {
 
-        this.userRepository = userRepository;
         this.userService = userService;
     }
 
@@ -80,7 +76,7 @@ public class UserResource {
      */
     @GetMapping("/users/authorities")
     @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public List<String> getAuthorities() {
         return userService.getAuthorities();
     }

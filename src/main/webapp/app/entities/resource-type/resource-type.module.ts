@@ -1,48 +1,33 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { ReservationSharedModule } from '../../shared';
+import { ReservationSharedModule } from 'app/shared';
 import {
-    ResourceTypeService,
-    ResourceTypePopupService,
     ResourceTypeComponent,
     ResourceTypeDetailComponent,
-    ResourceTypeDialogComponent,
-    ResourceTypePopupComponent,
+    ResourceTypeUpdateComponent,
     ResourceTypeDeletePopupComponent,
     ResourceTypeDeleteDialogComponent,
     resourceTypeRoute,
-    resourceTypePopupRoute,
+    resourceTypePopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...resourceTypeRoute,
-    ...resourceTypePopupRoute,
-];
+const ENTITY_STATES = [...resourceTypeRoute, ...resourceTypePopupRoute];
 
 @NgModule({
-    imports: [
-        ReservationSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [ReservationSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         ResourceTypeComponent,
         ResourceTypeDetailComponent,
-        ResourceTypeDialogComponent,
+        ResourceTypeUpdateComponent,
         ResourceTypeDeleteDialogComponent,
-        ResourceTypePopupComponent,
-        ResourceTypeDeletePopupComponent,
+        ResourceTypeDeletePopupComponent
     ],
     entryComponents: [
         ResourceTypeComponent,
-        ResourceTypeDialogComponent,
-        ResourceTypePopupComponent,
+        ResourceTypeUpdateComponent,
         ResourceTypeDeleteDialogComponent,
-        ResourceTypeDeletePopupComponent,
-    ],
-    providers: [
-        ResourceTypeService,
-        ResourceTypePopupService,
+        ResourceTypeDeletePopupComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

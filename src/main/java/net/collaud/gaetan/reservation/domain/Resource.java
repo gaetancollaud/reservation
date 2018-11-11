@@ -1,5 +1,6 @@
 package net.collaud.gaetan.reservation.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -32,6 +33,7 @@ public class Resource implements Serializable {
     private String calendarSearchRegex;
 
     @ManyToOne
+    @JsonIgnoreProperties("")
     private ResourceType type;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

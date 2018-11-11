@@ -1,18 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Subscription } from 'rxjs/Subscription';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
-import { Resource } from './resource.model';
+import { IResource } from 'app/shared/model/resource.model';
+import { Principal } from 'app/core';
 import { ResourceService } from './resource.service';
-import { Principal } from '../../shared';
 
 @Component({
     selector: 'jhi-resource',
     templateUrl: './resource.component.html'
 })
 export class ResourceComponent implements OnInit, OnDestroy {
-resources: Resource[];
+    resources: IResource[];
     currentAccount: any;
     eventSubscriber: Subscription;
 
@@ -21,20 +21,20 @@ resources: Resource[];
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager,
         private principal: Principal
-    ) {
-    }
+    ) {}
 
     loadAll() {
         this.resourceService.query().subscribe(
-            (res: HttpResponse<Resource[]>) => {
+            (res: HttpResponse<IResource[]>) => {
                 this.resources = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
     }
+
     ngOnInit() {
         this.loadAll();
-        this.principal.identity().then((account) => {
+        this.principal.identity().then(account => {
             this.currentAccount = account;
         });
         this.registerChangeInResources();
@@ -44,14 +44,15 @@ resources: Resource[];
         this.eventManager.destroy(this.eventSubscriber);
     }
 
-    trackId(index: number, item: Resource) {
+    trackId(index: number, item: IResource) {
         return item.id;
     }
+
     registerChangeInResources() {
-        this.eventSubscriber = this.eventManager.subscribe('resourceListModification', (response) => this.loadAll());
+        this.eventSubscriber = this.eventManager.subscribe('resourceListModification', response => this.loadAll());
     }
 
-    private onError(error) {
-        this.jhiAlertService.error(error.message, null, null);
+    private onError(errorMessage: string) {
+        this.jhiAlertService.error(errorMessage, null, null);
     }
 }

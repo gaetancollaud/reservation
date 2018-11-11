@@ -1,16 +1,14 @@
 <div>
-    <h2>
+    <h2 id="page-heading">
         <span jhiTranslate="reservationApp.resourceType.home.title">Resource Types</span>
-        <button class="btn btn-primary float-right jh-create-entity create-resource-type" [routerLink]="['/', { outlets: { popup: ['resource-type-new'] } }]">
-            <span class="fa fa-plus"></span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-resource-type" [routerLink]="['/resource-type/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
             <span  jhiTranslate="reservationApp.resourceType.home.createLabel">
             Create new Resource Type
             </span>
         </button>
     </h2>
     <jhi-alert></jhi-alert>
-    <div class="row">
-    </div>
     <br/>
     <div class="table-responsive" *ngIf="resourceTypes">
         <table class="table table-striped">
@@ -26,7 +24,7 @@
             </thead>
             <tbody>
             <tr *ngFor="let resourceType of resourceTypes ;trackBy: trackId">
-                <td><a [routerLink]="['../resource-type', resourceType.id ]">{{resourceType.id}}</a></td>
+                <td><a [routerLink]="['/resource-type', resourceType.id, 'view' ]">{{resourceType.id}}</a></td>
                 <td>{{resourceType.name}}</td>
                 <td>{{resourceType.minTimeSec}}</td>
                 <td>{{resourceType.maxTimeSec}}</td>
@@ -34,17 +32,15 @@
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../resource-type', resourceType.id ]"
+                                [routerLink]="['/resource-type', resourceType.id, 'view' ]"
                                 class="btn btn-info btn-sm">
-                            <span class="fa fa-eye"></span>
+                            <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'resource-type/'+ resourceType.id + '/edit'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
+                                [routerLink]="['/resource-type', resourceType.id, 'edit']"
                                 class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
                         <button type="submit"
@@ -52,7 +48,7 @@
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
+                            <fa-icon [icon]="'times'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                         </button>
                     </div>

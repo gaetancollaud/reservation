@@ -1,13 +1,13 @@
 package net.collaud.gaetan.reservation.repository;
 
 import net.collaud.gaetan.reservation.domain.Reservation;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
-import org.springframework.data.jpa.repository.*;
 import java.util.List;
 
 /**
- * Spring Data JPA repository for the Reservation entity.
+ * Spring Data  repository for the Reservation entity.
  */
 @SuppressWarnings("unused")
 @Repository
