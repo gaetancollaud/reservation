@@ -1,103 +1,85 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpResponse} from '@angular/common/http';
-import {Observable} from 'rxjs/Observable';
-import {SERVER_API_URL} from '../../app.constants';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import * as moment from 'moment';
+import { DATE_FORMAT } from 'app/shared/constants/input.constants';
+import { map } from 'rxjs/operators';
 
-import {JhiDateUtils} from 'ng-jhipster';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { IReservation } from 'app/shared/model/reservation.model';
+import { ReservationCriteria } from 'app/entities/reservation/reservation.criteria.model';
 
-import {Reservation, ReservationCriteria} from './index';
-import {createRequestOption} from '../../shared';
+type EntityResponseType = HttpResponse<IReservation>;
+type EntityArrayResponseType = HttpResponse<IReservation[]>;
 
-export type EntityResponseType = HttpResponse<Reservation>;
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ReservationService {
+    public resourceUrl = SERVER_API_URL + 'api/reservations';
 
-	private resourceUrl = SERVER_API_URL + 'api/reservations';
+    constructor(private http: HttpClient) {}
 
-	constructor(private http: HttpClient, private dateUtils: JhiDateUtils) {
-	}
+    create(reservation: IReservation): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(reservation);
+        return this.http
+            .post<IReservation>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+    }
 
-	create(reservation: Reservation): Observable<EntityResponseType> {
-		const copy = this.convert(reservation);
-		return this.http.post<Reservation>(this.resourceUrl, copy, {observe: 'response'})
-			.map((res: EntityResponseType) => this.convertResponse(res));
-	}
+    update(reservation: IReservation): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(reservation);
+        return this.http
+            .put<IReservation>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+    }
 
-	update(reservation: Reservation): Observable<EntityResponseType> {
-		const copy = this.convert(reservation);
-		return this.http.put<Reservation>(this.resourceUrl, copy, {observe: 'response'})
-			.map((res: EntityResponseType) => this.convertResponse(res));
-	}
+    find(id: number): Observable<EntityResponseType> {
+        return this.http
+            .get<IReservation>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+    }
 
-	find(id: number): Observable<EntityResponseType> {
-		return this.http.get<Reservation>(`${this.resourceUrl}/${id}`, {observe: 'response'})
-			.map((res: EntityResponseType) => this.convertResponse(res));
-	}
+    search(criteria: ReservationCriteria): Observable<EntityArrayResponseType> {
+        return this.http
+            .post<IReservation[]>(`${this.resourceUrl}/search`, criteria, { observe: 'response' })
+            .pipe(map((res: HttpResponse<IReservation[]>) => this.convertDateArrayFromServer(res)));
+    }
 
-	search(criteria: ReservationCriteria): Observable<HttpResponse<Reservation[]>> {
-		return this.http.post<Reservation[]>(`${this.resourceUrl}/search`, criteria, {observe: 'response'})
-			.map((res: HttpResponse<Reservation[]>) => this.convertArrayResponse(res));
-	}
+    query(req?: any): Observable<EntityArrayResponseType> {
+        const options = createRequestOption(req);
+        return this.http
+            .get<IReservation[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+    }
 
-	query(req?: any): Observable<HttpResponse<Reservation[]>> {
-		const options = createRequestOption(req);
-		return this.http.get<Reservation[]>(this.resourceUrl, {params: options, observe: 'response'})
-			.map((res: HttpResponse<Reservation[]>) => this.convertArrayResponse(res));
-	}
+    delete(id: number): Observable<HttpResponse<any>> {
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+    }
 
-	delete(id: number): Observable<HttpResponse<any>> {
-		return this.http.delete<any>(`${this.resourceUrl}/${id}`, {observe: 'response'});
-	}
+    protected convertDateFromClient(reservation: IReservation): IReservation {
+        const copy: IReservation = Object.assign({}, reservation, {
+            timestampStart:
+                reservation.timestampStart != null && reservation.timestampStart.isValid() ? reservation.timestampStart.toJSON() : null,
+            timestampEnd: reservation.timestampEnd != null && reservation.timestampEnd.isValid() ? reservation.timestampEnd.toJSON() : null
+        });
+        return copy;
+    }
 
-	private convertResponse(res: EntityResponseType): EntityResponseType {
-		const body: Reservation = this.convertItemFromServer(res.body);
-		return res.clone({body});
-	}
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.timestampStart = res.body.timestampStart != null ? moment(res.body.timestampStart) : null;
+            res.body.timestampEnd = res.body.timestampEnd != null ? moment(res.body.timestampEnd) : null;
+        }
+        return res;
+    }
 
-	private convertArrayResponse(res: HttpResponse<Reservation[]>): HttpResponse<Reservation[]> {
-		const jsonResponse: Reservation[] = res.body;
-		const body: Reservation[] = [];
-		for (let i = 0; i < jsonResponse.length; i++) {
-			body.push(this.convertItemFromServer(jsonResponse[i]));
-		}
-		return res.clone({body});
-	}
-
-	/**
-	 * Convert a returned JSON object to Reservation.
-	 */
-	private convertItemFromServer(reservation: Reservation): Reservation {
-		const copy: Reservation = Object.assign({}, reservation);
-		copy.timestampStart = this.dateUtils
-			.convertDateTimeFromServer(reservation.timestampStart);
-		copy.timestampEnd = this.dateUtils
-			.convertDateTimeFromServer(reservation.timestampEnd);
-		return copy;
-	}
-
-	/**
-	 * Convert a Reservation to a JSON which can be sent to the server.
-	 */
-	private convert(reservation: Reservation): Reservation {
-		const copy: Reservation = Object.assign({}, reservation);
-		copy.timestampStart = reservation.timestampStart;
-		copy.timestampEnd = reservation.timestampEnd;
-		// if (!Number.isInteger(reservation.timestampStart)) {
-		// 	if (reservation.timestampStart instanceof Date) {
-		// 		copy.timestampStart = reservation.timestampStart.getTime();
-		// 	} else {
-		// 		copy.timestampStart = this.dateUtils.toDate(reservation.timestampStart);
-		// 	}
-		// }
-		//
-		// if (!Number.isInteger(reservation.timestampEnd)) {
-		// 	if (reservation.timestampStart instanceof Date) {
-		// 		copy.timestampEnd = reservation.timestampEnd.getTime();
-		// 	} else {
-		// 		copy.timestampEnd = this.dateUtils.toDate(reservation.timestampEnd);
-		// 	}
-		// }
-		return copy;
-	}
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((reservation: IReservation) => {
+                reservation.timestampStart = reservation.timestampStart != null ? moment(reservation.timestampStart) : null;
+                reservation.timestampEnd = reservation.timestampEnd != null ? moment(reservation.timestampEnd) : null;
+            });
+        }
+        return res;
+    }
 }

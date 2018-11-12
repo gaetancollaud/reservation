@@ -1,8 +1,7 @@
 export class ReservationCriteria {
-	constructor(public from: Date, public to: Date) {
-	}
+    constructor(public from: Date, public to: Date) {}
 
-	public clone(): ReservationCriteria {
-		return new ReservationCriteria(this.from, this.to);
-	}
+    public clone(): ReservationCriteria {
+        return new ReservationCriteria(this.from, this.to);
+    }
 }

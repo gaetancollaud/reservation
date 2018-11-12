@@ -1,7 +1,6 @@
-
 {
     "reservationApp": {
-        "reservation" : {
+        "reservation": {
             "home": {
                 "title": "Reservations",
                 "createLabel": "Create a new Reservation",
@@ -20,8 +19,8 @@
             "timestampEnd": "Timestamp End",
             "resource": "Resource",
             "user": "User",
-			"start": "Start",
-			"duration": "Duration"
+            "start": "Start",
+            "duration": "Duration"
         }
     }
 }

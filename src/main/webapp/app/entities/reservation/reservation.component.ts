@@ -1,59 +1,58 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {HttpResponse, HttpErrorResponse} from '@angular/common/http';
-import {Subscription} from 'rxjs/Subscription';
-import {JhiEventManager, JhiAlertService} from 'ng-jhipster';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs';
+import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
-import {Reservation} from './reservation.model';
-import {ReservationService} from './reservation.service';
-import {Principal} from '../../shared';
+import { IReservation } from 'app/shared/model/reservation.model';
+import { Principal } from 'app/core';
+import { ReservationService } from './reservation.service';
 
 @Component({
-	selector: 'jhi-reservation',
-	templateUrl: './reservation.component.html'
+    selector: 'jhi-reservation',
+    templateUrl: './reservation.component.html'
 })
 export class ReservationComponent implements OnInit, OnDestroy {
-	reservations: Reservation[];
-	currentAccount: any;
-	eventSubscriber: Subscription;
+    reservations: IReservation[];
+    currentAccount: any;
+    eventSubscriber: Subscription;
 
-	constructor(
-		private reservationService: ReservationService,
-		private jhiAlertService: JhiAlertService,
-		private eventManager: JhiEventManager,
-		private principal: Principal
-	) {
-	}
+    constructor(
+        private reservationService: ReservationService,
+        private jhiAlertService: JhiAlertService,
+        private eventManager: JhiEventManager,
+        private principal: Principal
+    ) {}
 
-	loadAll() {
-		this.reservationService.query().subscribe(
-			(res: HttpResponse<Reservation[]>) => {
-				this.reservations = res.body;
-			},
-			(res: HttpErrorResponse) => this.onError(res.message)
-		);
-	}
+    loadAll() {
+        this.reservationService.query().subscribe(
+            (res: HttpResponse<IReservation[]>) => {
+                this.reservations = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
 
-	ngOnInit() {
-		this.loadAll();
-		this.principal.identity().then((account) => {
-			this.currentAccount = account;
-		});
-		this.registerChangeInReservations();
-	}
+    ngOnInit() {
+        this.loadAll();
+        this.principal.identity().then(account => {
+            this.currentAccount = account;
+        });
+        this.registerChangeInReservations();
+    }
 
-	ngOnDestroy() {
-		this.eventManager.destroy(this.eventSubscriber);
-	}
+    ngOnDestroy() {
+        this.eventManager.destroy(this.eventSubscriber);
+    }
 
-	trackId(index: number, item: Reservation) {
-		return item.id;
-	}
+    trackId(index: number, item: IReservation) {
+        return item.id;
+    }
 
-	registerChangeInReservations() {
-		this.eventSubscriber = this.eventManager.subscribe('reservationListModification', (response) => this.loadAll());
-	}
+    registerChangeInReservations() {
+        this.eventSubscriber = this.eventManager.subscribe('reservationListModification', response => this.loadAll());
+    }
 
-	private onError(error) {
-		this.jhiAlertService.error(error.message, null, null);
-	}
+    private onError(errorMessage: string) {
+        this.jhiAlertService.error(errorMessage, null, null);
+    }
 }

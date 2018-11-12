@@ -2,7 +2,6 @@ package net.collaud.gaetan.reservation.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import net.collaud.gaetan.reservation.domain.Resource;
-
 import net.collaud.gaetan.reservation.repository.ResourceRepository;
 import net.collaud.gaetan.reservation.web.rest.errors.BadRequestAlertException;
 import net.collaud.gaetan.reservation.web.rest.util.HeaderUtil;
@@ -54,6 +53,7 @@ public class ResourceResource {
         if (resourceDTO.getId() != null) {
             throw new BadRequestAlertException("A new resource cannot already have an ID", ENTITY_NAME, "idexists");
         }
+
         Resource resource = resourceMapper.toEntity(resourceDTO);
         resource = resourceRepository.save(resource);
         ResourceDTO result = resourceMapper.toDto(resource);
@@ -76,8 +76,9 @@ public class ResourceResource {
     public ResponseEntity<ResourceDTO> updateResource(@RequestBody ResourceDTO resourceDTO) throws URISyntaxException {
         log.debug("REST request to update Resource : {}", resourceDTO);
         if (resourceDTO.getId() == null) {
-            return createResource(resourceDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
+
         Resource resource = resourceMapper.toEntity(resourceDTO);
         resource = resourceRepository.save(resource);
         ResourceDTO result = resourceMapper.toDto(resource);
@@ -97,7 +98,7 @@ public class ResourceResource {
         log.debug("REST request to get all Resources");
         List<Resource> resources = resourceRepository.findAll();
         return resourceMapper.toDto(resources);
-        }
+    }
 
     /**
      * GET  /resources/:id : get the "id" resource.
@@ -109,9 +110,9 @@ public class ResourceResource {
     @Timed
     public ResponseEntity<ResourceDTO> getResource(@PathVariable Long id) {
         log.debug("REST request to get Resource : {}", id);
-        Resource resource = resourceRepository.findOne(id);
-        ResourceDTO resourceDTO = resourceMapper.toDto(resource);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(resourceDTO));
+        Optional<ResourceDTO> resourceDTO = resourceRepository.findById(id)
+            .map(resourceMapper::toDto);
+        return ResponseUtil.wrapOrNotFound(resourceDTO);
     }
 
     /**
@@ -124,7 +125,8 @@ public class ResourceResource {
     @Timed
     public ResponseEntity<Void> deleteResource(@PathVariable Long id) {
         log.debug("REST request to delete Resource : {}", id);
-        resourceRepository.delete(id);
+
+        resourceRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

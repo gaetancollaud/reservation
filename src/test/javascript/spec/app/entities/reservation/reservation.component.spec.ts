@@ -1,55 +1,51 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { Observable } from 'rxjs/Observable';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Observable, of } from 'rxjs';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 
 import { ReservationTestModule } from '../../../test.module';
-import { ReservationComponent } from '../../../../../../main/webapp/app/entities/reservation/reservation.component';
-import { ReservationService } from '../../../../../../main/webapp/app/entities/reservation/reservation.service';
-import { Reservation } from '../../../../../../main/webapp/app/entities/reservation/reservation.model';
+import { ReservationComponent } from 'app/entities/reservation/reservation.component';
+import { ReservationService } from 'app/entities/reservation/reservation.service';
+import { Reservation } from 'app/shared/model/reservation.model';
 
 describe('Component Tests', () => {
-
     describe('Reservation Management Component', () => {
         let comp: ReservationComponent;
         let fixture: ComponentFixture<ReservationComponent>;
         let service: ReservationService;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [ReservationTestModule],
                 declarations: [ReservationComponent],
-                providers: [
-                    ReservationService
-                ]
+                providers: []
             })
-            .overrideTemplate(ReservationComponent, '')
-            .compileComponents();
-        }));
+                .overrideTemplate(ReservationComponent, '')
+                .compileComponents();
 
-        beforeEach(() => {
             fixture = TestBed.createComponent(ReservationComponent);
             comp = fixture.componentInstance;
             service = fixture.debugElement.injector.get(ReservationService);
         });
 
-        describe('OnInit', () => {
-            it('Should call load all on init', () => {
-                // GIVEN
-                const headers = new HttpHeaders().append('link', 'link;link');
-                spyOn(service, 'query').and.returnValue(Observable.of(new HttpResponse({
-                    body: [new Reservation(123)],
-                    headers
-                })));
+        it('Should call load all on init', () => {
+            // GIVEN
+            const headers = new HttpHeaders().append('link', 'link;link');
+            spyOn(service, 'query').and.returnValue(
+                of(
+                    new HttpResponse({
+                        body: [new Reservation(123)],
+                        headers
+                    })
+                )
+            );
 
-                // WHEN
-                comp.ngOnInit();
+            // WHEN
+            comp.ngOnInit();
 
-                // THEN
-                expect(service.query).toHaveBeenCalled();
-                expect(comp.reservations[0]).toEqual(jasmine.objectContaining({id: 123}));
-            });
+            // THEN
+            expect(service.query).toHaveBeenCalled();
+            expect(comp.reservations[0]).toEqual(jasmine.objectContaining({ id: 123 }));
         });
     });
-
 });

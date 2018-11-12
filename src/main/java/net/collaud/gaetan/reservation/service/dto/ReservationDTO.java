@@ -1,10 +1,7 @@
 package net.collaud.gaetan.reservation.service.dto;
 
-
 import java.time.ZonedDateTime;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -20,7 +17,7 @@ public class ReservationDTO implements Serializable {
 
     private Long resourceId;
 
-    private Long userId;
+    private String userId;
 
     public Long getId() {
         return id;
@@ -54,11 +51,11 @@ public class ReservationDTO implements Serializable {
         this.resourceId = resourceId;
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -72,7 +69,7 @@ public class ReservationDTO implements Serializable {
         }
 
         ReservationDTO reservationDTO = (ReservationDTO) o;
-        if(reservationDTO.getId() == null || getId() == null) {
+        if (reservationDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), reservationDTO.getId());
@@ -89,6 +86,8 @@ public class ReservationDTO implements Serializable {
             "id=" + getId() +
             ", timestampStart='" + getTimestampStart() + "'" +
             ", timestampEnd='" + getTimestampEnd() + "'" +
+            ", resource=" + getResourceId() +
+            ", user='" + getUserId() + "'" +
             "}";
     }
 }

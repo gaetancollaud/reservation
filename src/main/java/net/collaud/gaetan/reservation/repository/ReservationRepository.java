@@ -1,17 +1,13 @@
 package net.collaud.gaetan.reservation.repository;
 
 import net.collaud.gaetan.reservation.domain.Reservation;
-import net.collaud.gaetan.reservation.service.dto.critieria.ReservationCriteria;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
-import org.springframework.data.jpa.repository.*;
-
-import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
- * Spring Data JPA repository for the Reservation entity.
+ * Spring Data  repository for the Reservation entity.
  */
 @SuppressWarnings("unused")
 @Repository

@@ -2,12 +2,9 @@ package net.collaud.gaetan.reservation.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import net.collaud.gaetan.reservation.domain.Reservation;
-
 import net.collaud.gaetan.reservation.repository.ReservationRepository;
 import net.collaud.gaetan.reservation.service.ReservationService;
 import net.collaud.gaetan.reservation.service.dto.critieria.ReservationCriteria;
-import net.collaud.gaetan.reservation.utils.EndOfDayTemporalAduster;
-import net.collaud.gaetan.reservation.utils.StartOfDayTemporalAduster;
 import net.collaud.gaetan.reservation.web.rest.errors.BadRequestAlertException;
 import net.collaud.gaetan.reservation.web.rest.util.HeaderUtil;
 import net.collaud.gaetan.reservation.service.dto.ReservationDTO;
@@ -21,9 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import java.time.ZonedDateTime;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAdjuster;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,9 +55,12 @@ public class ReservationResource {
     @Timed
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) throws URISyntaxException {
         log.debug("REST request to save Reservation : {}", reservationDTO);
-        reservationDTO.setId(0L);
+        if (reservationDTO.getId() != null) {
+            throw new BadRequestAlertException("A new reservation cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+
         Reservation reservation = reservationMapper.toEntity(reservationDTO);
-        reservation = reservationService.addReservation(reservation);
+        reservation = reservationRepository.save(reservation);
         ReservationDTO result = reservationMapper.toDto(reservation);
         return ResponseEntity.created(new URI("/api/reservations/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -84,10 +81,11 @@ public class ReservationResource {
     public ResponseEntity<ReservationDTO> updateReservation(@RequestBody ReservationDTO reservationDTO) throws URISyntaxException {
         log.debug("REST request to update Reservation : {}", reservationDTO);
         if (reservationDTO.getId() == null) {
-            return createReservation(reservationDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
+
         Reservation reservation = reservationMapper.toEntity(reservationDTO);
-        reservation = reservationService.editReservation(reservation);
+        reservation = reservationRepository.save(reservation);
         ReservationDTO result = reservationMapper.toDto(reservation);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, reservationDTO.getId().toString()))
@@ -125,9 +123,9 @@ public class ReservationResource {
     @Timed
     public ResponseEntity<ReservationDTO> getReservation(@PathVariable Long id) {
         log.debug("REST request to get Reservation : {}", id);
-        Reservation reservation = reservationRepository.findOne(id);
-        ReservationDTO reservationDTO = reservationMapper.toDto(reservation);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(reservationDTO));
+        Optional<ReservationDTO> reservationDTO = reservationRepository.findById(id)
+            .map(reservationMapper::toDto);
+        return ResponseUtil.wrapOrNotFound(reservationDTO);
     }
 
     /**
@@ -140,7 +138,8 @@ public class ReservationResource {
     @Timed
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         log.debug("REST request to delete Reservation : {}", id);
-        reservationService.deleteReservation(id);
+
+        reservationRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

@@ -1,16 +1,14 @@
 <div>
-    <h2>
+    <h2 id="page-heading">
         <span jhiTranslate="reservationApp.reservation.home.title">Reservations</span>
-        <button class="btn btn-primary float-right jh-create-entity create-reservation" [routerLink]="['/', { outlets: { popup: ['reservation-new'] } }]">
-            <span class="fa fa-plus"></span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-reservation" [routerLink]="['/reservation/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
             <span  jhiTranslate="reservationApp.reservation.home.createLabel">
             Create new Reservation
             </span>
         </button>
     </h2>
     <jhi-alert></jhi-alert>
-    <div class="row">
-    </div>
     <br/>
     <div class="table-responsive" *ngIf="reservations">
         <table class="table table-striped">
@@ -26,12 +24,12 @@
             </thead>
             <tbody>
             <tr *ngFor="let reservation of reservations ;trackBy: trackId">
-                <td><a [routerLink]="['../reservation', reservation.id ]">{{reservation.id}}</a></td>
+                <td><a [routerLink]="['/reservation', reservation.id, 'view' ]">{{reservation.id}}</a></td>
                 <td>{{reservation.timestampStart | date:'medium'}}</td>
                 <td>{{reservation.timestampEnd | date:'medium'}}</td>
                 <td>
                     <div *ngIf="reservation.resourceId">
-                        <a [routerLink]="['../resource', reservation.resourceId  ]" >{{reservation.resourceId}}</a>
+                        <a [routerLink]="['../resource', reservation.resourceId , 'view' ]" >{{reservation.resourceId}}</a>
                     </div>
                 </td>
                 <td>
@@ -40,17 +38,15 @@
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../reservation', reservation.id ]"
+                                [routerLink]="['/reservation', reservation.id, 'view' ]"
                                 class="btn btn-info btn-sm">
-                            <span class="fa fa-eye"></span>
+                            <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'reservation/'+ reservation.id + '/edit'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
+                                [routerLink]="['/reservation', reservation.id, 'edit']"
                                 class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
                         <button type="submit"
@@ -58,7 +54,7 @@
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
+                            <fa-icon [icon]="'times'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                         </button>
                     </div>

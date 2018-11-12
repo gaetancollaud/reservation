@@ -1,9 +1,6 @@
 package net.collaud.gaetan.reservation.service.dto;
 
-
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -71,7 +68,7 @@ public class ResourceDTO implements Serializable {
         }
 
         ResourceDTO resourceDTO = (ResourceDTO) o;
-        if(resourceDTO.getId() == null || getId() == null) {
+        if (resourceDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), resourceDTO.getId());
@@ -89,6 +86,7 @@ public class ResourceDTO implements Serializable {
             ", name='" + getName() + "'" +
             ", calendarLink='" + getCalendarLink() + "'" +
             ", calendarSearchRegex='" + getCalendarSearchRegex() + "'" +
+            ", type=" + getTypeId() +
             "}";
     }
 }

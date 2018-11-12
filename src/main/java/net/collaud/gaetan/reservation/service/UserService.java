@@ -81,7 +81,7 @@ public class UserService {
 	 */
 	public Optional<UserDTO> updateUser(UserDTO userDTO) {
 		return Optional.of(userRepository
-			.findOne(userDTO.getId()))
+			.getOne(userDTO.getId()))
 			.map(user -> {
 				user.setLogin(userDTO.getLogin());
 				user.setFirstName(userDTO.getFirstName());
@@ -93,7 +93,7 @@ public class UserService {
 				Set<Authority> managedAuthorities = user.getAuthorities();
 				managedAuthorities.clear();
 				userDTO.getAuthorities().stream()
-					.map(authorityRepository::findOne)
+					.map(authorityRepository::getOne)
 					.forEach(managedAuthorities::add);
 				cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
 				cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
@@ -177,7 +177,7 @@ public class UserService {
 
 	private User syncUserWithIdP(Map<String, Object> details, User user) {
 		// save account in to sync users between IdP and JHipster's local database
-		Optional<User> existingUser = userRepository.findOneByLogin(user.getLogin());
+		Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(user.getEmail());
 		if (existingUser.isPresent()) {
 			// if IdP sends last updated information, use it to determine if an update should happen
 			if (details.get("updated_at") != null) {

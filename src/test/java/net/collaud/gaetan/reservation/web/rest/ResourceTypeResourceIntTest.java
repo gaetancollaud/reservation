@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+
 import static net.collaud.gaetan.reservation.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -163,7 +164,7 @@ public class ResourceTypeResourceIntTest {
             .andExpect(jsonPath("$.[*].maxTimeSec").value(hasItem(DEFAULT_MAX_TIME_SEC.intValue())))
             .andExpect(jsonPath("$.[*].maxResource").value(hasItem(DEFAULT_MAX_RESOURCE.intValue())));
     }
-
+    
     @Test
     @Transactional
     public void getResourceType() throws Exception {
@@ -194,10 +195,11 @@ public class ResourceTypeResourceIntTest {
     public void updateResourceType() throws Exception {
         // Initialize the database
         resourceTypeRepository.saveAndFlush(resourceType);
+
         int databaseSizeBeforeUpdate = resourceTypeRepository.findAll().size();
 
         // Update the resourceType
-        ResourceType updatedResourceType = resourceTypeRepository.findOne(resourceType.getId());
+        ResourceType updatedResourceType = resourceTypeRepository.findById(resourceType.getId()).get();
         // Disconnect from session so that the updates on updatedResourceType are not directly saved in db
         em.detach(updatedResourceType);
         updatedResourceType
@@ -230,15 +232,15 @@ public class ResourceTypeResourceIntTest {
         // Create the ResourceType
         ResourceTypeDTO resourceTypeDTO = resourceTypeMapper.toDto(resourceType);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restResourceTypeMockMvc.perform(put("/api/resource-types")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(resourceTypeDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the ResourceType in the database
         List<ResourceType> resourceTypeList = resourceTypeRepository.findAll();
-        assertThat(resourceTypeList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(resourceTypeList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -246,6 +248,7 @@ public class ResourceTypeResourceIntTest {
     public void deleteResourceType() throws Exception {
         // Initialize the database
         resourceTypeRepository.saveAndFlush(resourceType);
+
         int databaseSizeBeforeDelete = resourceTypeRepository.findAll().size();
 
         // Get the resourceType

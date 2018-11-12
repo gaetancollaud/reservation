@@ -4,7 +4,7 @@
       "packageName": "net.collaud.gaetan.reservation",
       "nativeLanguage": "en"
     },
-    "jhipsterVersion": "4.14.2",
+    "jhipsterVersion": "5.6.1",
     "baseName": "reservation",
     "packageName": "net.collaud.gaetan.reservation",
     "packageFolder": "net/collaud/gaetan/reservation",

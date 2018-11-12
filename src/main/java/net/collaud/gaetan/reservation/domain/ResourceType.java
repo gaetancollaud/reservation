@@ -13,7 +13,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "resource_type")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ResourceType implements Serializable {
 
     private static final long serialVersionUID = 1L;

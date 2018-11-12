@@ -2,7 +2,6 @@ package net.collaud.gaetan.reservation.repository;
 
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
-import com.sun.org.apache.regexp.internal.RE;
 import net.collaud.gaetan.reservation.domain.QReservation;
 import net.collaud.gaetan.reservation.domain.Reservation;
 import net.collaud.gaetan.reservation.service.dto.critieria.ReservationCriteria;

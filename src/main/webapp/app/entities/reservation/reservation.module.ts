@@ -1,52 +1,30 @@
-import {NgModule, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {RouterModule} from '@angular/router';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
-import {ReservationSharedModule} from '../../shared';
-import {ReservationAdminModule} from '../../admin/admin.module';
+import { ReservationSharedModule } from 'app/shared';
+import { ReservationAdminModule } from 'app/admin/admin.module';
 import {
-	ReservationService,
-	ReservationPopupService,
-	ReservationComponent,
-	ReservationDetailComponent,
-	ReservationDialogComponent,
-	ReservationPopupComponent,
-	ReservationDeletePopupComponent,
-	ReservationDeleteDialogComponent,
-	reservationRoute,
-	reservationPopupRoute,
+    ReservationComponent,
+    ReservationDetailComponent,
+    ReservationUpdateComponent,
+    ReservationDeletePopupComponent,
+    ReservationDeleteDialogComponent,
+    reservationRoute,
+    reservationPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-	...reservationRoute,
-	...reservationPopupRoute,
-];
+const ENTITY_STATES = [...reservationRoute, ...reservationPopupRoute];
 
 @NgModule({
-	imports: [
-		ReservationSharedModule,
-		ReservationAdminModule,
-		RouterModule.forChild(ENTITY_STATES)
-	],
-	declarations: [
-		ReservationComponent,
-		ReservationDetailComponent,
-		ReservationDialogComponent,
-		ReservationDeleteDialogComponent,
-		ReservationPopupComponent,
-		ReservationDeletePopupComponent,
-	],
-	entryComponents: [
-		ReservationComponent,
-		ReservationDialogComponent,
-		ReservationPopupComponent,
-		ReservationDeleteDialogComponent,
-		ReservationDeletePopupComponent,
-	],
-	providers: [
-		ReservationService,
-		ReservationPopupService,
-	],
-	schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    imports: [ReservationSharedModule, ReservationAdminModule, RouterModule.forChild(ENTITY_STATES)],
+    declarations: [
+        ReservationComponent,
+        ReservationDetailComponent,
+        ReservationUpdateComponent,
+        ReservationDeleteDialogComponent,
+        ReservationDeletePopupComponent
+    ],
+    entryComponents: [ReservationComponent, ReservationUpdateComponent, ReservationDeleteDialogComponent, ReservationDeletePopupComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class ReservationReservationModule {
-}
+export class ReservationReservationModule {}

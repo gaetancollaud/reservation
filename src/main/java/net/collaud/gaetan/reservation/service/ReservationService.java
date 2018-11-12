@@ -54,7 +54,7 @@ public class ReservationService {
 
 	public void deleteReservation(long reservationId) {
 		checkSecurity(reservationId);
-		reservationRepository.delete(reservationId);
+		reservationRepository.deleteById(reservationId);
 	}
 
 	protected void checkConflict(Reservation reservation) {
@@ -71,7 +71,7 @@ public class ReservationService {
 	}
 
 	protected Reservation checkSecurity(long reservationId) {
-		Reservation old = reservationRepository.findOne(reservationId);
+		Reservation old = reservationRepository.getOne(reservationId);
 		if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.RESERVATION_MANAGE)) {
 			return old;
 		}
@@ -83,7 +83,7 @@ public class ReservationService {
 	}
 
 	protected void checkReservationRestriction(Reservation reservation) {
-		Resource resource = resourceRepository.findOne(reservation.getResource().getId());
+		Resource resource = resourceRepository.getOne(reservation.getResource().getId());
 		if (!StringUtils.isEmpty(resource.getCalendarLink())) {
 			Optional<String> regex = Optional.ofNullable(resource.getCalendarSearchRegex())
 				.filter(v -> !StringUtils.isEmpty(v));

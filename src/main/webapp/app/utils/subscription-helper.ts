@@ -1,21 +1,20 @@
-import {AnonymousSubscription} from 'rxjs/Subscription';
+import { SubscriptionLike } from 'rxjs';
 
 export class SubscriptionHelper {
+    private subscriptions: SubscriptionLike[];
 
-	private subscriptions: AnonymousSubscription[];
+    constructor() {
+        this.subscriptions = [];
+    }
 
-	constructor() {
-		this.subscriptions = [];
-	}
+    public addSubscription(subscription: SubscriptionLike): SubscriptionLike {
+        this.subscriptions.push(subscription);
+        return subscription;
+    }
 
-	public addSubscription(subscription: AnonymousSubscription): AnonymousSubscription {
-		this.subscriptions.push(subscription);
-		return subscription;
-	}
-
-	public unsubscribeAll(): void {
-		this.subscriptions.forEach((s: AnonymousSubscription) => {
-			s.unsubscribe();
-		});
-	}
+    public unsubscribeAll(): void {
+        this.subscriptions.forEach((s: SubscriptionLike) => {
+            s.unsubscribe();
+        });
+    }
 }
