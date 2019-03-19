@@ -1,5 +1,6 @@
 package net.collaud.gaetan.reservation.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import net.collaud.gaetan.reservation.config.Constants;
 
 import net.collaud.gaetan.reservation.domain.Authority;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 /**
  * A DTO representing a user, with his authorities.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
 
     private Long id;

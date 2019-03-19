@@ -114,7 +114,14 @@ public class UserService {
 
 	@Transactional(readOnly = true)
 	public Page<UserDTO> getAllManagedUsers(Pageable pageable) {
-		return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER).map(UserDTO::new);
+		return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER)
+            .map(u -> {
+                UserDTO userDTO = new UserDTO();
+                userDTO.setId(u.getId());
+                userDTO.setFirstName(u.getFirstName());
+                userDTO.setLastName(u.getLastName());
+                return userDTO;
+            });
 	}
 
 	@Transactional(readOnly = true)

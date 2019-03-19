@@ -77,6 +77,9 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
     private _search: BehaviorSubject<ReservationCriteria>;
     private _resources: BehaviorSubject<Resource[]>;
     private _resourceTypes: BehaviorSubject<ResourceType[]>;
+    private readonly PAGEABLE = {
+        size: 1000
+    };
 
     constructor(
         private principal: Principal,
@@ -103,11 +106,11 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
     }
 
     public start(): void {
-        this.resourceTypeService.query().subscribe((res: HttpResponse<IResourceType[]>) => this._resourceTypes.next(res.body));
+        this.resourceTypeService.query(this.PAGEABLE).subscribe((res: HttpResponse<IResourceType[]>) => this._resourceTypes.next(res.body));
         this.addSubscription(this.search.subscribe(() => this.updateSearch()));
         const userIdentity = fromPromise(this.principal.identity());
         this.addSubscription(
-            combineLatest(this._searchResult, this.resourceService.query(), this.userService.query(), userIdentity).subscribe(
+            combineLatest(this._searchResult, this.resourceService.query(), this.userService.query(this.PAGEABLE), userIdentity).subscribe(
                 (res: any) => {
                     const reservations: Reservation[] = res[0].body;
                     const resources: Resource[] = res[1].body;
