@@ -193,6 +193,7 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
         if (reservation.id) {
             response = this.reservationService.update(reservation);
         } else {
+            reservation.id = undefined;
             response = this.reservationService.create(reservation);
         }
         return response.pipe(
