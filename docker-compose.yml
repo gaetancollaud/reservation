@@ -9,3 +9,10 @@ services:
       - MYSQL_DATABASE=dev
       - MYSQL_USER=dev
       - MYSQL_PASSWORD=dev
+
+  reservation:
+    image: reservation
+    links:
+      - mysql
+    ports:
+      - 8080:8080

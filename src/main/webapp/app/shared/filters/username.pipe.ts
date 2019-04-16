@@ -6,6 +6,13 @@ import { User } from 'app/core';
 })
 export class UsernamePipe implements PipeTransform {
     transform(user: User): any {
-        return user ? `${user.firstName} ${user.lastName[0]}.` : '';
+        if (user) {
+            if (user.lastName) {
+                return `${user.firstName} ${user.lastName[0]}.`;
+            } else {
+                return user.firstName;
+            }
+        }
+        return '';
     }
 }

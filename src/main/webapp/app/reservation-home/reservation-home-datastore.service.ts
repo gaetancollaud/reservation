@@ -97,8 +97,11 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
         this._searchResult = new Subject();
         this._search = new BehaviorSubject<ReservationCriteria>(
             new ReservationCriteria(
-                moment().toDate(),
                 moment()
+                    .startOf('day')
+                    .toDate(),
+                moment()
+                    .startOf('day')
                     .add(1, 'month')
                     .toDate()
             )
