@@ -137,7 +137,7 @@ export class UserReservationDialogComponent extends SubscriptionHelper implement
         this.reservation = formValue;
         const dateStart = new Date(formValue.dateStartDate);
         dateStart.setHours(Math.round(formValue.dateStartTime / 100), formValue.dateStartTime % 100);
-        this.reservation.timestampStart = moment();
+        this.reservation.timestampStart = moment(dateStart.getTime());
         this.reservation.timestampEnd = moment(dateStart.getTime() + formValue.durationSec * 1000);
 
         this.subscribeToSaveResponse(this.datastore.save(this.reservation));
