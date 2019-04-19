@@ -5,10 +5,10 @@ services:
     ports:
       - 3306:3306
     environment:
-      - MYSQL_ROOT_PASSWORD=dev
-      - MYSQL_DATABASE=dev
-      - MYSQL_USER=dev
-      - MYSQL_PASSWORD=dev
+      - MYSQL_ROOT_PASSWORD=reservation
+      - MYSQL_DATABASE=reservation
+      - MYSQL_USER=reservation
+      - MYSQL_PASSWORD=reservation
 
   reservation:
     image: reservation
