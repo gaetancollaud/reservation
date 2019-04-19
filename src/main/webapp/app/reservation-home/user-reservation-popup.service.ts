@@ -43,7 +43,9 @@ export class UserReservationPopupService {
                             throw new Error(`Unable to find a reservation with the id '${id}'`);
                         }
                         this.datastore.operation.next(new ReservationOperation(theOne, operation));
-                        this.ngbModalRef = this.reservationModalRef(component, theOne);
+                        setTimeout(() => {
+                            this.ngbModalRef = this.reservationModalRef(component, theOne);
+                        });
                         resolve(this.ngbModalRef);
                     });
             } else {
@@ -52,7 +54,7 @@ export class UserReservationPopupService {
                 setTimeout(() => {
                     this.ngbModalRef = this.reservationModalRef(component, new Reservation());
                     resolve(this.ngbModalRef);
-                }, 0);
+                });
             }
         });
     }
