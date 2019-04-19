@@ -97,8 +97,11 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
         this._searchResult = new Subject();
         this._search = new BehaviorSubject<ReservationCriteria>(
             new ReservationCriteria(
-                moment().toDate(),
                 moment()
+                    .startOf('day')
+                    .toDate(),
+                moment()
+                    .startOf('day')
                     .add(1, 'month')
                     .toDate()
             )
@@ -193,6 +196,7 @@ export class ReservationHomeDatastoreService extends SubscriptionHelper {
         if (reservation.id) {
             response = this.reservationService.update(reservation);
         } else {
+            reservation.id = undefined;
             response = this.reservationService.create(reservation);
         }
         return response.pipe(

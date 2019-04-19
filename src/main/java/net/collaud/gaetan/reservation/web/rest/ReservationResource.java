@@ -60,7 +60,7 @@ public class ReservationResource {
         }
 
         Reservation reservation = reservationMapper.toEntity(reservationDTO);
-        reservation = reservationRepository.save(reservation);
+        reservation = reservationService.addReservation(reservation);
         ReservationDTO result = reservationMapper.toDto(reservation);
         return ResponseEntity.created(new URI("/api/reservations/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -85,7 +85,7 @@ public class ReservationResource {
         }
 
         Reservation reservation = reservationMapper.toEntity(reservationDTO);
-        reservation = reservationRepository.save(reservation);
+        reservation = reservationService.editReservation(reservation);
         ReservationDTO result = reservationMapper.toDto(reservation);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, reservationDTO.getId().toString()))
@@ -139,7 +139,7 @@ public class ReservationResource {
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         log.debug("REST request to delete Reservation : {}", id);
 
-        reservationRepository.deleteById(id);
+        reservationService.deleteReservation(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

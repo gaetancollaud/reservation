@@ -9,4 +9,10 @@ eg $input-color: red;
 // Import Bootstrap source files from node_modules
 @import '~bootstrap/scss/bootstrap';
 
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+.cdk-overlay-container {
+    z-index: 2000;
+}
+
 /* jhipster-needle-scss-add-vendor JHipster will add new css style */

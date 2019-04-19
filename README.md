@@ -4,6 +4,6 @@ This application was generated using JHipster 5.6.1, you can find documentation 
 ## Build docker image
 
 ```
-./mvnw package -Pprod -DskipTests dockerfile:build
+./mvnw package -DskipTests -Pprod verify jib:dockerBuild
 docker push gaetancollaud/reservation
 ```
