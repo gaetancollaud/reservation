@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       app: reservation
-  replicas: 1
+  replicas: 3
   template:
     metadata:
       labels:
@@ -24,5 +24,18 @@ spec:
               value: prod,swagger
             - name: SPRING_DATASOURCE_URL
               value: jdbc:mysql://reservation-mysql:3306/reservation?useUnicode=true&characterEncoding=utf8&useSSL=false
-
+            - name: OSEF
+              value: hello
+          livenessProbe:
+            httpGet:
+              path: /management/health
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /management/health
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 30
 
