@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: reservation-http
+  labels:
+    app: reservation
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: reservation
+    tier: app
+  type: LoadBalancer

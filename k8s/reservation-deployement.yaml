@@ -1,0 +1,28 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: reservation-app
+spec:
+  selector:
+    matchLabels:
+      app: reservation
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: reservation
+        tier: app
+    spec:
+      containers:
+        - name: reservation
+          image: gaetancollaud/reservation
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod,swagger
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://reservation-mysql:3306/reservation?useUnicode=true&characterEncoding=utf8&useSSL=false
+
+
