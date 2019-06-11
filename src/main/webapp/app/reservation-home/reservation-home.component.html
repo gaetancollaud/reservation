@@ -1,12 +1,41 @@
 <div class="row">
-	<div class="col-md-12" *ngIf="datastore.operation|async">
-		<jhi-reservation-operation></jhi-reservation-operation>
-	</div>
-	<div class="col-md-2">
-		<jhi-reservation-search></jhi-reservation-search>
-	</div>
-	<div class="col-md-10">
-		<jhi-reservation-list></jhi-reservation-list>
-	</div>
+    <div class="col-md-12" *ngIf="datastore.operation|async">
+        <jhi-reservation-operation></jhi-reservation-operation>
+    </div>
+    <div class="col-md-2">
+        <jhi-reservation-search></jhi-reservation-search>
+    </div>
+    <div class="col-md-10">
+        <jhi-reservation-list></jhi-reservation-list>
+    </div>
 </div>
+<hr/>
+<div class="row">
+    <div class="col-md-12">
+        <h4>Réserver une machine ou une formation</h4>
+        <ol>
+            <li>Connectez-vous en haut à droite sous <b>"Sign in"</b></li>
+            <li>Cliquez sur le bouton en haut à droite <b>"+ Ajouter une réservation"</b> et remplissez les champs
+                nécessaires.
+                Vous pouvez choisir de réserver une machine ou une formation. Pour la date, vérifiez qu’elle se trouve
+                bien dans notre <a href="www.fablab-fribourg.ch/#agenda">agenda</a>. Nous ne sommes pas responsable s’il
+                y avait une erreur d’inscription, vous risqueriez de vous trouver devant une porte close. Merci aussi de
+                modifier/supprimer votre réservation au plus vite si vous voyez que vous n’arriverez pas à venir pour
+                laisser de la place pour d'autres. En cas de non utilisation d’une réservation, on pourrait vous
+                demander un dédomagement de CHF10.-. Pour les formations, prévenez idéalement avant la fin du week-end,
+                car l’animateur.trice doit s’organiser pour venir spécialement pour vous, souvent directement après son
+                travail..
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+
+        <h4>Créer un compte</h4>
+        <p>
+            Si on ne vous a pas encore créé de compte, faites-le en cliquant sur <b>"Sign in"</b> puis <b>"Nouvel
+            utilisateur ? Enregistrement"</b>. Vous recevrez un email de confirmation pour valider votre adresse.
+        </p>
+    </div>
 
