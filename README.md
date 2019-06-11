@@ -5,5 +5,6 @@ This application was generated using JHipster 5.6.1, you can find documentation 
 
 ```
 ./mvnw package -DskipTests -Pprod verify jib:dockerBuild
+docker tag reservation gaetancollaud/reservation
 docker push gaetancollaud/reservation
 ```
