@@ -76,6 +76,9 @@ spring:
 # export SECURITY_OAUTH2_CLIENT_CLIENT_ID="jhipster"
 # export SECURITY_OAUTH2_CLIENT_CLIENT_SECRET="38561a05"
 # ===================================================================
+
+keycloak-client-secret:
+
 logging:
     level:
         ROOT: WARN
@@ -89,7 +92,7 @@ security:
             access-token-uri: ${oauth2.issuer}/protocol/openid-connect/token
             user-authorization-uri: ${oauth2.issuer}/protocol/openid-connect/auth
             client-id: reservation-api
-            client-secret: todo
+            client-secret: ${keycloak-client-secret}
             client-authentication-scheme: form
             scope: openid profile email roles bla
 

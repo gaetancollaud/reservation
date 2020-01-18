@@ -14,5 +14,7 @@ services:
     image: reservation
     links:
       - mysql
+    environment:
+      - KEYCLOAK_CLIENT_SECRET=
     ports:
       - 8080:8080
